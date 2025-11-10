@@ -12,7 +12,7 @@ class Produkt:
         self.kategoria = kategoria 
 
 # Tworzę obiekt klasy Produkt
-Zabawki = Produkt("Gry", 65.20, "Strategiczne")
+Zabawki = Produkt("Quake III", 35.20, "Gry")
 
 # Wyświetlam każdy atrybut osobno
 print("Nazwa produktu:", Zabawki.nazwa)
