@@ -1,14 +1,12 @@
 from flask import Blueprint, render_template, request
-from app import db
+from app import db, query_counter    # dodałem w ramach task2
 from models import Message
 
 main = Blueprint("main", __name__)
 
-
 @main.route("/")
 def index():
     return render_template("index.html")
-
 
 @main.route("/form", methods=["GET", "POST"])
 def form():
@@ -20,4 +18,6 @@ def form():
             db.session.commit()
             return render_template("form.html", message=msg)
 
-    return render_template("form.html", message=None)
+@main.route("/query-count")
+def query_count():
+    return {"queries_executed": query_counter["count"]}
