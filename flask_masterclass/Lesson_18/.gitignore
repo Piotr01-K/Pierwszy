@@ -1,0 +1,13 @@
+# środowisko wirtualne
+.venv/
+
+# pliki środowiska
+.env
+
+# cache Pythona
+__pycache__/
+*.pyc
+
+# pliki edytora
+.vscode/
+.idea/
