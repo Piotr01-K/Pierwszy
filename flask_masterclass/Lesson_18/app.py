@@ -6,13 +6,28 @@ from config import config
 
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
+import time
 
-query_counter = {"count": 0}
+# Rozszerzone statystyki
+sql_stats = {
+    "count": 0,
+    "queries": [],
+    "total_time_ms": 0
+}
 
 @event.listens_for(Engine, "before_cursor_execute")
-def count_queries(conn, cursor, statement, parameters, context, executemany):
-    query_counter["count"] += 1
-    print(f"Zapytanie #{query_counter['count']}: {statement}")
+def before_execute(conn, cursor, statement, parameters, context, executemany):
+    context._query_start_time = time.time()
+
+@event.listens_for(Engine, "after_cursor_execute")
+def after_execute(conn, cursor, statement, parameters, context, executemany):
+    duration = (time.time() - context._query_start_time) * 1000  # ms
+    sql_stats["count"] += 1
+    sql_stats["total_time_ms"] += duration
+    sql_stats["queries"].append({
+        "query": statement,
+        "duration_ms": round(duration, 3)
+    })
 
 db = SQLAlchemy()
 migrate = Migrate()

@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request
-from app import db, query_counter    # dodałem w ramach task2
+from flask import Blueprint, render_template, request, jsonify
+from app import db, sql_stats    #   dodałem w ramach task3
+#   from app import db, query_counter    # dodałem w ramach task2
 from models import Message
 
 main = Blueprint("main", __name__)
@@ -20,4 +21,8 @@ def form():
 
 @main.route("/query-count")
 def query_count():
-    return {"queries_executed": query_counter["count"]}
+    return {"queries_executed": sql_stats["count"]}
+
+@main.route("/stats")
+def stats():
+    return jsonify(sql_stats)
