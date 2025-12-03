@@ -1,5 +1,11 @@
-from app import db
 
+#  RELACJA ONE-TO-MANY (1:N)
+#  Category -> Product
+# -------------------------------
+from datetime import datetime
+#   from flask_sqlalchemy import SQLAlchemy  
+#   db = SQLAlchemy()
+from app import db
 # -------------------------------
 #  MODEL MESSAGE (Twój dotychczasowy)
 # -------------------------------
@@ -13,12 +19,7 @@ class Message(db.Model):
     def __repr__(self):
         return f"<Message {self.text}>"
 
-
-# -------------------------------
-#  RELACJA ONE-TO-MANY (1:N)
-#  Category -> Product
-# -------------------------------
-
+# --------------------------
 class Category(db.Model):
     __tablename__ = "categories"
 
@@ -139,3 +140,31 @@ class Profile(db.Model):
     def __repr__(self):
         return f"<Profile for user_id={self.user_id}>"
 
+#   Dodaję w ramach zadania 4"
+class Booking(db.Model):
+    __tablename__ = "bookings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    room_id = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+#   Dodaję w ramach zadania 4"
+class Notification(db.Model):
+    __tablename__ = "notifications"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)   # komu przypisane
+    message = db.Column(db.String(255), nullable=False)  # treść powiadomienia
+    is_read = db.Column(db.Boolean, default=False)    # czy przeczytane
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "message": self.message,
+            "is_read": self.is_read,
+            "created_at": self.created_at.isoformat()
+        }
