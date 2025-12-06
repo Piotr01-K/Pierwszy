@@ -75,10 +75,15 @@ WSGI_APPLICATION = 'mojastrona.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'baza_testowa_task4',
+        'USER': 'task4_user',
+        'PASSWORD': 'task4_haslo',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
