@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from ogloszenia.views import home_view
 from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
+from . import views   #  dodane w ramach task 2 (lesson 20)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", home_view, name="home"),
-    path('info/', views.info_view, name='info'),
-    path('rules/', views.rules_view, name='rules'),
+    path('info/', views.info_view, name='info'),   # dodane w ramach task 1 (lesson 20)
+    path('rules/', views.rules_view, name='rules'),   # dodane w ramach task 1 (lesson 20)
+    path('user/<str:username>/', views.user_profile_view, name='user-profile'),   # dodane w ramach task 2 (lesson 20)
 ]
