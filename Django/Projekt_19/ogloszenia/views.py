@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Product   # dodane w ramach Task 4 lesson 20
 
 def home_view(request):
     context = {
@@ -19,3 +20,7 @@ def info_view(request):
 def rules_view(request):
     return HttpResponse("Regulamin")
 
+# dodane w ramach task 4 lesson 20
+def product_list_view(request):
+    produkty = Product.objects.all()
+    return render(request, 'product_list.html', {'produkty': produkty})
