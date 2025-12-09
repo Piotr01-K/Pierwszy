@@ -19,7 +19,7 @@ from django.urls import path
 from ogloszenia.views import home_view, product_list_view
 #   from mojastrona.views import info_view, rules_view, user_profile_view
 #   from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
-#   from . import views   #  dodane w ramach task 2 (lesson 20)
+from . import views   #  dodane w ramach task 2 (lesson 20)
 from mojastrona import views as project_views
 
 # urlpatterns = [
@@ -38,4 +38,5 @@ urlpatterns = [
     path('rules/', project_views.rules_view, name='rules'),
     path('user/<str:username>/', project_views.user_profile_view, name='user-profile'),
     path('produkty/', product_list_view, name='product-list'),
+    path('about/', views.about_view, name='about'),    #  dodałem w ramach task 5 lesson 20
 ]

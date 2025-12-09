@@ -24,3 +24,7 @@ def rules_view(request):
 def product_list_view(request):
     produkty = Product.objects.all()
     return render(request, 'product_list.html', {'produkty': produkty})
+
+# dodane w ramach task 5 lesson 20
+def about_view(request):
+    return render(request, 'about.html')
