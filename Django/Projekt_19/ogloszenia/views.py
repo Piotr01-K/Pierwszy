@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Product   # dodane w ramach Task 4 lesson 20
+#   from .models import Product   # dodane w ramach Task 4 lesson 20
+from .models import Category   #  dodane w ramach Task 3 Lesson 21
 
 def home_view(request):
     context = {
@@ -28,3 +29,8 @@ def product_list_view(request):
 # dodane w ramach task 5 lesson 20
 def about_view(request):
     return render(request, 'about.html')
+
+# dodane w ramach task 3 lesson 21
+def categories_list_view(request):
+    categories = Category.objects.all()
+    return render(request, 'categories_list.html', {'categories': categories})

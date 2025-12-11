@@ -21,6 +21,7 @@ from ogloszenia.views import home_view, product_list_view
 #   from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
 from . import views   #  dodane w ramach task 2 (lesson 20)
 from mojastrona import views as project_views
+from ogloszenia.views import categories_list_view    # dodane w ramach Task 3 Lesson 21
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -39,4 +40,5 @@ urlpatterns = [
     path('user/<str:username>/', project_views.user_profile_view, name='user-profile'),
     path('produkty/', product_list_view, name='product-list'),
     path('about/', views.about_view, name='about'),    #  dodałem w ramach task 5 lesson 20
+    path('categories/', categories_list_view, name='categories-list'),    #  dodałem w ramach task 3 lesson 21
 ]
