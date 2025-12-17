@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from ogloszenia.views import home_view, product_list_view
 #   from mojastrona.views import info_view, rules_view, user_profile_view
-#   from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
-from . import views   #  dodane w ramach task 2 (lesson 20)
+from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
+#   from . import views   #  dodane w ramach task 2 (lesson 20)
 from mojastrona import views as project_views
 from ogloszenia.views import categories_list_view    # dodane w ramach Task 3 Lesson 21
+from ogloszenia import views    # dodane w ramach Task 6 Lesson 21
+
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -41,4 +43,5 @@ urlpatterns = [
     path('produkty/', product_list_view, name='product-list'),
     path('about/', views.about_view, name='about'),    #  dodałem w ramach task 5 lesson 20
     path('categories/', categories_list_view, name='categories-list'),    #  dodałem w ramach task 3 lesson 21
+    path('categories/<int:pk>/', views.category_detail_view, name='category-detail'),    # dodałem w ramach task 6 lesson 21
 ]

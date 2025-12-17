@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 #   from .models import Product   # dodane w ramach Task 4 lesson 20
 from .models import Category   #  dodane w ramach Task 3 Lesson 21
 
@@ -34,3 +34,7 @@ def about_view(request):
 def categories_list_view(request):
     categories = Category.objects.all()
     return render(request, 'categories_list.html', {'categories': categories})
+
+def category_detail_view(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    return render(request, 'category_detail.html', {'category': category})
