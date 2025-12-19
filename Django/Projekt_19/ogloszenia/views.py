@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 #   from .models import Product   # dodane w ramach Task 4 lesson 20
 from .models import Category   #  dodane w ramach Task 3 Lesson 21
+from django.utils import timezone    #  dodane w ramach Task 8 Lesson 21
+from .models import Article     #  dodane w ramach Task 8 Lesson 21
 
 def home_view(request):
     context = {
@@ -38,3 +40,11 @@ def categories_list_view(request):
 def category_detail_view(request, pk):
     category = get_object_or_404(Category, pk=pk)
     return render(request, 'category_detail.html', {'category': category})
+
+def article_list_view(request):
+    articles = Article.objects.filter(is_published=True)
+
+    return render(request, "article_list.html", {
+        "articles": articles,
+        "now": timezone.now(),
+    })

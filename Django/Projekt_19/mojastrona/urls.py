@@ -23,6 +23,7 @@ from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
 from mojastrona import views as project_views
 from ogloszenia.views import categories_list_view    # dodane w ramach Task 3 Lesson 21
 from ogloszenia import views    # dodane w ramach Task 6 Lesson 21
+from ogloszenia.views import article_list_view   # dodane w ramach Task 8 Lesson 21
 
 
 # urlpatterns = [
@@ -44,4 +45,5 @@ urlpatterns = [
     path('about/', views.about_view, name='about'),    #  dodałem w ramach task 5 lesson 20
     path('categories/', categories_list_view, name='categories-list'),    #  dodałem w ramach task 3 lesson 21
     path('categories/<int:pk>/', views.category_detail_view, name='category-detail'),    # dodałem w ramach task 6 lesson 21
+    path('articles/', article_list_view, name='article-list'),   # dodałem w ramach task 8 lesson 21
 ]
