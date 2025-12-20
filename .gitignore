@@ -1,0 +1,26 @@
+# Ignoruj środowiska wirtualne
+venv/
+*/venv/
+**/venv/
+
+# Ignoruj cache Pythona
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignoruj pliki edytora
+.vscode/
+
+# Ignoruj bazy sqlite
+*.sqlite3
+*.db
+
+# Ignoruj migracje (opcjonalnie)
+*/migrations/* 
+!*__init__.py
+
+# Ignoruj pliki systemowe Windows
+Thumbs.db
+desktop.ini
+
