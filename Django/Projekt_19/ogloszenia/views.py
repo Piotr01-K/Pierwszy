@@ -44,6 +44,10 @@ def category_detail_view(request, pk):
 def article_list_view(request):
     articles = Article.objects.filter(is_published=True)
 
+    q = request.GET.get('q')
+    if q:
+        articles = articles.filter(title__icontains=q)
+
     return render(request, "article_list.html", {
         "articles": articles,
         "now": timezone.now(),
