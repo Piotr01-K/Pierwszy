@@ -17,6 +17,16 @@
 
 <hr>
 
+<form method="get">
+    <label>
+        Minimalna liczba komentarzy:
+        <input type="number" name="min_comments" value="{{ request.GET.min_comments }}">
+    </label>
+    <button type="submit">Filtruj</button>
+</form>
+
+<hr>
+
 <h1>Lista artykułów</h1>
 
 <ul>

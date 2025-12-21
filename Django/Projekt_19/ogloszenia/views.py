@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Category   #  dodane w ramach Task 3 Lesson 21
 from django.utils import timezone    #  dodane w ramach Task 8 Lesson 21
 from .models import Article     #  dodane w ramach Task 8 Lesson 21
+from django.db.models import Count   # dodane w ramach Task 5 Lesson 22
 
 def home_view(request):
     context = {
@@ -47,6 +48,17 @@ def article_list_view(request):
     q = request.GET.get('q')
     if q:
         articles = articles.filter(title__icontains=q)
+
+    #  Pobieram parametr z URL
+    min_comments = request.GET.get('min_comments')
+
+    #  Jeśli parametr istnieje
+    if min_comments:
+        articles = articles.annotate(
+            comments_count=Count('id')  # na razie symbolicznie
+        ).filter(
+            comments_count__gte=min_comments
+        )
 
     return render(request, "article_list.html", {
         "articles": articles,
