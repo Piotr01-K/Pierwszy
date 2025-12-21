@@ -4,6 +4,8 @@ from .models import Category   #  dodane w ramach Task 3 Lesson 21
 from django.utils import timezone    #  dodane w ramach Task 8 Lesson 21
 from .models import Article     #  dodane w ramach Task 8 Lesson 21
 from django.db.models import Count   # dodane w ramach Task 5 Lesson 22
+from .forms import ContactForm
+
 
 def home_view(request):
     context = {
@@ -72,3 +74,9 @@ def blog_entries_view(request, blog_id):
         'article_list.html',
         {'articles': articles}
     )
+
+# dodane w ramach task 6 lesson 22
+def contact_view(request):
+    form = ContactForm()
+    return render(request, 'ogloszenia/contact.html', {'form': form})
+
