@@ -52,3 +52,11 @@ def article_list_view(request):
         "articles": articles,
         "now": timezone.now(),
     })
+
+def blog_entries_view(request, blog_id):
+    articles = Article.objects.filter(category_id=blog_id)
+    return render(
+        request,
+        'article_list.html',
+        {'articles': articles}
+    )

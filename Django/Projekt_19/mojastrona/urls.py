@@ -46,4 +46,5 @@ urlpatterns = [
     path('categories/', categories_list_view, name='categories-list'),    #  dodałem w ramach task 3 lesson 21
     path('categories/<int:pk>/', views.category_detail_view, name='category-detail'),    # dodałem w ramach task 6 lesson 21
     path('articles/', article_list_view, name='article-list'),   # dodałem w ramach task 8 lesson 21
+    path('blog/<int:blog_id>/entries/', views.blog_entries_view, name='blog-entries'),    # dodałem w ramach task 4 lesson 22
 ]
