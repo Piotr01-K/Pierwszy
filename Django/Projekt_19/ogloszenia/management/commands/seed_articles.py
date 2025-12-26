@@ -5,27 +5,37 @@ from ogloszenia.models import Article, Category
 
 
 class Command(BaseCommand):
-    help = "Tworzy przykładowe artykuły przy użyciu Faker"
+    help = "Seeduje bazę artykułami i kategoriami"
 
-    def handle(self, *args, **options):
-        fake = Faker("pl_PL")
+    def handle(self, *args, **kwargs):
+        fake = Faker('pl_PL')
 
-        categories = Category.objects.all()
+        # Kategorie
+        category_names = [
+            'Sport',
+            'Technologia',
+            'Zdrowie',
+            'Edukacja',
+            'Lifestyle'
+        ]
 
-        if not categories.exists():
-            self.stdout.write(self.style.ERROR(
-                "Brak kategorii! Najpierw dodaj kategorie."
-            ))
-            return
+        categories = []
+        for name in category_names:
+            category, created = Category.objects.get_or_create(name=name)
+            categories.append(category)
 
-        for i in range(10):
-            Article.objects.create(
-                title=fake.sentence(nb_words=5),
-                content=fake.text(max_nb_chars=1000),
-                category=random.choice(categories),
-                is_published=True,
+        self.stdout.write(f'Utworzono {len(categories)} kategorii')
+        
+            # Artykuły
+        for _ in range(10):
+            article = Article.objects.create(
+                title=fake.sentence(nb_words=6),
+                content=fake.text(max_nb_chars=800),
+                is_published=True
             )
-
-        self.stdout.write(self.style.SUCCESS(
-            "Utworzono 10 losowych artykułów!"
-        ))
+            # Losowe kategorie (1–3)
+            article.categories.set(
+                random.sample(categories, random.randint(1, 3))
+            )
+        self.stdout.write('Utworzono 10 artykułów z kategoriami')
+    
