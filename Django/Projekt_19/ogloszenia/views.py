@@ -5,7 +5,7 @@ from django.utils import timezone    #  dodane w ramach Task 8 Lesson 21
 from .models import Article     #  dodane w ramach Task 8 Lesson 21
 from django.db.models import Count   # dodane w ramach Task 5 Lesson 22
 from .forms import ContactForm
-
+from datetime import timedelta   # dodane w ramach Task 8 Lesson 22
 
 def home_view(request):
     context = {
@@ -52,15 +52,21 @@ def article_list_view(request):
         articles = articles.filter(title__icontains=q)
 
     #  Pobieram parametr z URL
-    min_comments = request.GET.get('min_comments')
+    #   min_comments = request.GET.get('min_comments')
 
     #  Jeśli parametr istnieje
-    if min_comments:
-        articles = articles.annotate(
-            comments_count=Count('id')  # na razie symbolicznie
-        ).filter(
-            comments_count__gte=min_comments
-        )
+    #   if min_comments:
+    #    articles = articles.annotate(
+    #        comments_count=Count('id')  # na razie symbolicznie
+    #    ).filter(
+    #        comments_count__gte=min_comments
+    #    )'''
+
+    # FILTROWANIE: tylko ostatni tydzień   (dodane w ramach task 8 lesson 22)
+    recent = request.GET.get('recent')
+    if recent == 'true':
+        week_ago = timezone.now() - timedelta(days=7)
+        articles = articles.filter(created_at__gte=week_ago)
 
     return render(request, "article_list.html", {
         "articles": articles,
