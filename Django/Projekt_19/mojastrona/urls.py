@@ -26,6 +26,8 @@ from ogloszenia import views    # dodane w ramach Task 6 Lesson 21
 from ogloszenia.views import article_list_view   # dodane w ramach Task 8 Lesson 21
 from ogloszenia.views import ArticleListView    # dodane w ramach Task 9 Lesson 22
 from ogloszenia.views import statistics_view    # dodane w ramach Task 10 lesson 22
+from django.conf import settings     # dodane w ramach lesson 23 (przygotowanie do aplikacji "cars")
+from django.conf.urls.static import static    # dodane w ramach lesson 23 (przygotowanie do aplikacji "cars")
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -52,3 +54,5 @@ urlpatterns = [
     path('articles/', ArticleListView.as_view(), name='article_list'),    # dodałem w ramach task 9 lesson 22
     path('statistics/', statistics_view, name='statistics'),   # dodane w ramach Task 10 lesson 22
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

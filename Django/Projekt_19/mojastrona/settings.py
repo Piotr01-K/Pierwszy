@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ogloszenia.apps.OgloszeniaConfig',
     'crispy_forms',
     'crispy_bootstrap5',
+    'cars',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,6 @@ STATICFILES_DIRS = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
