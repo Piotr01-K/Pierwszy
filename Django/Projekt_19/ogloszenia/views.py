@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Category   #  dodane w ramach Task 3 Lesson 21
 from django.utils import timezone    #  dodane w ramach Task 8 Lesson 21
 from .models import Article     #  dodane w ramach Task 8 Lesson 21
-from django.db.models import Count   # dodane w ramach Task 5 Lesson 22
+from django.db.models import Count, Avg   # dodane w ramach Task 5 Lesson 22, uzupełnione w task 10 (Avg)
 from .forms import ContactForm
 from datetime import timedelta   # dodane w ramach Task 8 Lesson 22
 from django.views.generic import ListView   # dodane w ramach Task 9 Lesson 22
@@ -94,7 +94,7 @@ class ArticleListView(ListView):
     paginate_by = 5
     ordering = ["-created_at"]
 
-def get_queryset(self):
+    def get_queryset(self):
         queryset = Article.objects.filter(is_published=True)
 
         # filtr tekstowy
@@ -109,3 +109,40 @@ def get_queryset(self):
             queryset = queryset.filter(created_at__gte=week_ago)
 
         return queryset
+
+#   dodane w ramach task 10 lesson 22
+def statistics_view(request):
+    # Liczba artykułów w każdej kategorii
+    articles_per_category = Category.objects.annotate(
+        articles_count=Count('articles')
+    )
+
+    # Średnia ocena artykułów (globalnie – uproszczenie)
+    # average_rating = Article.objects.aggregate(
+    #     avg_rating=Avg('rating')
+    # )
+
+    # Top 5 najlepiej ocenianych artykułów
+    # top_articles = Article.objects.order_by('-rating')[:5]
+    # Najnowsze 5 artykułów (zamiast ocen)
+    top_articles = Article.objects.order_by('-created_at')[:5]
+
+    # Liczba artykułów ogółem
+    articles_count = Article.objects.count()
+
+    # Liczba artykułów w każdym miesiącu
+    articles_by_month = (
+        Article.objects
+        .extra(select={'month': "DATE_TRUNC('month', created_at)"})
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    return render(request, 'ogloszenia/statistics.html', {
+        'articles_per_category': articles_per_category,
+        #  'average_rating': average_rating,
+        'articles_count': articles_count,    #  dodałem w ramach task 10 lesson 22
+        'top_articles': top_articles,
+        'articles_by_month': articles_by_month,
+    })

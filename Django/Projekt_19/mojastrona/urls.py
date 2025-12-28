@@ -25,7 +25,7 @@ from ogloszenia.views import categories_list_view    # dodane w ramach Task 3 Le
 from ogloszenia import views    # dodane w ramach Task 6 Lesson 21
 from ogloszenia.views import article_list_view   # dodane w ramach Task 8 Lesson 21
 from ogloszenia.views import ArticleListView    # dodane w ramach Task 9 Lesson 22
-
+from ogloszenia.views import statistics_view    # dodane w ramach Task 10 lesson 22
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -50,4 +50,5 @@ urlpatterns = [
     path('blog/<int:blog_id>/entries/', views.blog_entries_view, name='blog-entries'),    # dodałem w ramach task 4 lesson 22
     path('contact/', views.contact_view, name='contact'),     # dodałem w ramach task 6 lesson 22
     path('articles/', ArticleListView.as_view(), name='article_list'),    # dodałem w ramach task 9 lesson 22
+    path('statistics/', statistics_view, name='statistics'),   # dodane w ramach Task 10 lesson 22
 ]
