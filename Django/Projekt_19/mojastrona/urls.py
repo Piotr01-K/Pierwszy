@@ -24,6 +24,7 @@ from mojastrona import views as project_views
 from ogloszenia.views import categories_list_view    # dodane w ramach Task 3 Lesson 21
 from ogloszenia import views    # dodane w ramach Task 6 Lesson 21
 from ogloszenia.views import article_list_view   # dodane w ramach Task 8 Lesson 21
+from ogloszenia.views import ArticleListView    # dodane w ramach Task 9 Lesson 22
 
 
 # urlpatterns = [
@@ -48,4 +49,5 @@ urlpatterns = [
     path('articles/', article_list_view, name='article-list'),   # dodałem w ramach task 8 lesson 21
     path('blog/<int:blog_id>/entries/', views.blog_entries_view, name='blog-entries'),    # dodałem w ramach task 4 lesson 22
     path('contact/', views.contact_view, name='contact'),     # dodałem w ramach task 6 lesson 22
+    path('articles/', ArticleListView.as_view(), name='article_list'),    # dodałem w ramach task 9 lesson 22
 ]

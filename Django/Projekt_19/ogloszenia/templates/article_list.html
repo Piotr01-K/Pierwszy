@@ -45,3 +45,17 @@
 
 </body>
 </html>
+
+<hr>
+
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">⬅ Poprzednia</a>
+    {% endif %}
+
+    Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Następna ➡</a>
+    {% endif %}
+</div>

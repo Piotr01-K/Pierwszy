@@ -6,6 +6,7 @@ from .models import Article     #  dodane w ramach Task 8 Lesson 21
 from django.db.models import Count   # dodane w ramach Task 5 Lesson 22
 from .forms import ContactForm
 from datetime import timedelta   # dodane w ramach Task 8 Lesson 22
+from django.views.generic import ListView   # dodane w ramach Task 9 Lesson 22
 
 def home_view(request):
     context = {
@@ -86,3 +87,25 @@ def contact_view(request):
     form = ContactForm()
     return render(request, 'ogloszenia/contact.html', {'form': form})
 
+class ArticleListView(ListView):
+    model = Article
+    template_name = "article_list.html"
+    context_object_name = "articles"
+    paginate_by = 5
+    ordering = ["-created_at"]
+
+def get_queryset(self):
+        queryset = Article.objects.filter(is_published=True)
+
+        # filtr tekstowy
+        q = self.request.GET.get('q')
+        if q:
+            queryset = queryset.filter(title__icontains=q)
+
+        # filtr ostatniego tygodnia
+        recent = self.request.GET.get('recent')
+        if recent == 'true':
+            week_ago = timezone.now() - timedelta(days=7)
+            queryset = queryset.filter(created_at__gte=week_ago)
+
+        return queryset
