@@ -10,6 +10,8 @@ class CarAdmin(admin.ModelAdmin):
     list_filter = ('is_available', 'year')    # dodane w ramach Lesson 23 task 4
     ordering = ('-year',)
 
+    readonly_fields = ('year',)   # dodane w ramach Lesson 23 task 7 (pole tylko do odczytu)
+
         # dodane w ramach Lesson 23 task 6
     @admin.display(description="Pełna nazwa")
     def full_name(self, obj):
