@@ -2,6 +2,8 @@
 venv/
 */venv/
 **/venv/
+env/
+ENV/
 
 # Ignoruj cache Pythona
 __pycache__/
@@ -11,10 +13,12 @@ __pycache__/
 
 # Ignoruj pliki edytora
 .vscode/
+.idea/
 
 # Ignoruj bazy sqlite
 *.sqlite3
 *.db
+db.sqlite3
 
 # Ignoruj migracje (opcjonalnie)
 */migrations/* 
@@ -25,3 +29,16 @@ Thumbs.db
 desktop.ini
 
 staticfiles/
+media/
+
+# Logs
+*.log
+
+# SECRETS / ENV FILES
+.env
+.env.*
+
+# SYSTEM
+Thumbs.db
+desktop.ini
+.DS_Store
