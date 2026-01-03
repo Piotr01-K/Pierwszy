@@ -1,7 +1,7 @@
 from django.contrib import admin, messages   # dodane "messages" w ramach Lesson 23 task 8
 from .models import Car
 from django.utils.html import format_html
-
+from .models import Dealer
 
 #   admin.site.register(Car)   #  zahashowane przy Lesson 23 task 2 (zapis zastąpiony lepszym)
 
@@ -53,3 +53,12 @@ class CarAdmin(admin.ModelAdmin):
         )
 
     mark_as_unavailable.short_description = "Oznacz jako niedostępne"
+
+class CarInline(admin.TabularInline):
+    model = Car
+    extra = 0
+
+@admin.register(Dealer)
+class DealerAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    inlines = [CarInline]
