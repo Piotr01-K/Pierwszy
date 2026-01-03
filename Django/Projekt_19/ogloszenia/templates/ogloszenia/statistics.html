@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Statystyki</title>
+</head>
+<body>
+
+<h1>📊 Statystyki aplikacji</h1>
+
+<h2>Artykuły w kategoriach</h2>
+<ul>
+    {% for category in articles_per_category %}
+        <li>{{ category.name }} – {{ category.articles_count }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Średnia ocena artykułów</h2>
+<p>{{ average_rating.avg_rating|default:"Brak danych" }}</p>
+
+<h2>Top 5 artykułów</h2>
+<ol>
+    {% for article in top_articles %}
+        <li>{{ article.title }} ({{ article.rating }})</li>
+    {% endfor %}
+</ol>
+
+<h2>Artykuły wg miesięcy</h2>
+<ul>
+    {% for item in articles_by_month %}
+        <li>{{ item.month|date:"Y-m" }} – {{ item.count }}</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
