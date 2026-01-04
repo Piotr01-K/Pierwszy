@@ -55,6 +55,7 @@ urlpatterns = [
     path('statistics/', statistics_view, name='statistics'),   # dodane w ramach Task 10 lesson 22
     path('admin/', admin.site.urls),
     path('', include('django.contrib.auth.urls')),    # dodane w ramach Task 2 lesson 24
+    path('profile/', views.profile, name='profile'),    # dodane w ramach Task 3 lesson 24
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
