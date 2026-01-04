@@ -7,6 +7,16 @@
 <body>
 <header>
     <h1>Witaj na mojej stronie!</h1>
+
+    <nav>
+        {% if user.is_authenticated %}
+            Profil |
+            <a href="{% url 'logout' %}">Wyloguj</a>
+        {% else %}
+            <a href="{% url 'login' %}">Zaloguj</a> |
+            <a href="{% url 'register' %}">Zarejestruj</a>
+        {% endif %}
+    </nav>
 </header>
 
 <main>

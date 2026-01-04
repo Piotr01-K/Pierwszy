@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include   #   dodane "include" w Task 2 lesson 24
 from ogloszenia.views import home_view, product_list_view
 #   from mojastrona.views import info_view, rules_view, user_profile_view
 from ogloszenia import views    #  dodane w ramach task 1 (lesson20)
@@ -53,6 +53,8 @@ urlpatterns = [
     path('contact/', views.contact_view, name='contact'),     # dodałem w ramach task 6 lesson 22
     path('articles/', ArticleListView.as_view(), name='article_list'),    # dodałem w ramach task 9 lesson 22
     path('statistics/', statistics_view, name='statistics'),   # dodane w ramach Task 10 lesson 22
+    path('admin/', admin.site.urls),
+    path('', include('django.contrib.auth.urls')),    # dodane w ramach Task 2 lesson 24
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
