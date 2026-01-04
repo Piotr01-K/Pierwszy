@@ -56,6 +56,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('django.contrib.auth.urls')),    # dodane w ramach Task 2 lesson 24
     path('profile/', views.profile, name='profile'),    # dodane w ramach Task 3 lesson 24
+    path('register/', views.register, name='register'),
+    path('', include('django.contrib.auth.urls')),
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
