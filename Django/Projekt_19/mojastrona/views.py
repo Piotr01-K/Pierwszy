@@ -1,8 +1,9 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required     #   dodaję w ramach task 3 lesson 24
 from django.shortcuts import render, redirect    #   dodaję w ramach task 3 lesson 24 / # redirect dodane przy task 4 lesson 24
-from django.contrib.auth.forms import UserCreationForm
+#  from django.contrib.auth.forms import UserCreationForm   # zahashowane przy task 6 lesson 24
 from django.contrib import messages
+from .forms import CustomUserCreationForm   #  dodane w ramach task 6 lesson 24
 
 def info_view(request):
     return HttpResponse("<h1>Informacje o stronie</h1>")    #  dodałem do task 1 lesson 20
@@ -23,12 +24,12 @@ def profile(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Rejestracja zakończona pomyślnie. Możesz się zalogować.")
             return redirect("login")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
 
     return render(request, "users/register.html", {"form": form})
