@@ -135,6 +135,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Dodane w ramach lesson 24 task 1
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'   # Dodane w ramach lesson 24 task 5
+LOGIN_REDIRECT_URL = 'home'    # Dodane w ramach lesson 24 task 5
+LOGIN_REDIRECT_URL = '/'     # Dodane w ramach lesson 24 task 1
+LOGOUT_REDIRECT_URL = 'login'    # Dodane w ramach lesson 24 task 1

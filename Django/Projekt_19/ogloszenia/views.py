@@ -7,7 +7,9 @@ from django.db.models import Count, Avg   # dodane w ramach Task 5 Lesson 22, uz
 from .forms import ContactForm
 from datetime import timedelta   # dodane w ramach Task 8 Lesson 22
 from django.views.generic import ListView   # dodane w ramach Task 9 Lesson 22
+from django.contrib.auth.decorators import login_required   # dodane w ramach Task 5 Lesson 24
 
+@login_required
 def home_view(request):
     context = {
         'user_name': 'Anna',
