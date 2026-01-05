@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Artykuły</title>
+</head>
+<body>
+
+    <img src="{% static 'ogloszenia/images/AAABBAAA.jpg' %}" alt="AAABBAAA" width="200">
+
+<form method="get">
+    <input type="text" name="q" placeholder="Szukaj artykułu..." value="{{ request.GET.q }}">
+    <button type="submit">Szukaj</button>
+</form>
+
+<hr>
+
+<form method="get">
+    <label>
+        Minimalna liczba komentarzy:
+        <input type="number" name="min_comments" value="{{ request.GET.min_comments }}">
+    </label>
+    <button type="submit">Filtruj</button>
+</form>
+
+<hr>
+
+<h1>Lista artykułów</h1>
+
+<ul>
+    {% for article in articles %}
+        <li>
+            {{ article.title }}
+
+            {% if article.created_at|timesince < "3 days" %}
+                <strong style="color:red;">NOWOŚĆ!</strong>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>Brak artykułów</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+
+<hr>
+
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">⬅ Poprzednia</a>
+    {% endif %}
+
+    Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Następna ➡</a>
+    {% endif %}
+</div>
