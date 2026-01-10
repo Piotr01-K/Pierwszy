@@ -28,6 +28,7 @@ from ogloszenia.views import ArticleListView    # dodane w ramach Task 9 Lesson 
 from ogloszenia.views import statistics_view    # dodane w ramach Task 10 lesson 22
 from django.conf import settings     # dodane w ramach lesson 23 (przygotowanie do aplikacji "cars")
 from django.conf.urls.static import static    # dodane w ramach lesson 23 (przygotowanie do aplikacji "cars")
+from django.contrib.auth import views as auth_views   # dodane w ramach Task 8 lesson 24 (auth_views zamiast views.py dla uniknięcia konfliktu)
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -60,6 +61,12 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('password-change/', auth_views.PasswordChangeView.as_view(
+        template_name='registration/password_change_form.html'
+    ), name='password_change'),     # dodane w ramach Task 8 lesson 24
+    path('password-change/done/', auth_views.PasswordChangeDoneView.as_view(
+        template_name='registration/password_change_done.html'
+    ), name='password_change_done'),     # dodane w ramach Task 8 lesson 24
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
