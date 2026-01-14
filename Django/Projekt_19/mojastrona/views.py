@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect    #   dodaję w ramach task 3 les
 #  from django.contrib.auth.forms import UserCreationForm   # zahashowane przy task 6 lesson 24
 from django.contrib import messages
 from .forms import CustomUserCreationForm   #  dodane w ramach task 6 lesson 24
+from django.contrib.auth import login     #  dodane w ramach task 9 lesson 24
 
 def info_view(request):
     return HttpResponse("<h1>Informacje o stronie</h1>")    #  dodałem do task 1 lesson 20
@@ -26,9 +27,12 @@ def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            #  form.save()   # zahashowane w ramach task 9 lesson 24 (na nw. automatyczne logowanie)
+            user = form.save()    # dodane w ramach task 9 lesson 24  (zapis do db)
+            login(request, user)    # dodane w ramach task 9 lesson 24  (automatyczne logowanie)
             messages.success(request, "Rejestracja zakończona pomyślnie. Możesz się zalogować.")
-            return redirect("login")
+            #  return redirect("login")  # zahashowane w ramach task 9 lesson 24 (na automatyczne logowanie)
+            return redirect("home")   # dodane w ramach task 9 lesson 24  (automatyczne logowanie)
     else:
         form = CustomUserCreationForm()
 
