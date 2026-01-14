@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect    #   dodaję w ramach task 3 les
 from django.contrib import messages
 from .forms import CustomUserCreationForm   #  dodane w ramach task 6 lesson 24
 from django.contrib.auth import login     #  dodane w ramach task 9 lesson 24
+from django.contrib.admin.views.decorators import staff_member_required    #  dodane w ramach task 10 lesson 24
+from django.contrib.auth.models import User     #  dodane w ramach task 10 lesson 24
 
 def info_view(request):
     return HttpResponse("<h1>Informacje o stronie</h1>")    #  dodałem do task 1 lesson 20
@@ -37,3 +39,9 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "users/register.html", {"form": form})
+
+#   dodane w ramach task 10 lesson 24   (widok tylko dla admina)
+@staff_member_required
+def users_list(request):
+    users = User.objects.all()
+    return render(request, "users/users_list.html", {"users": users})
