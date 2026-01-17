@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ogloszenia',
     'rest_framework',   # dodane w ramach task 1 lesson 25
+    'products',     # dodane w ramach task 2 lesson 25
 ]
 
 MIDDLEWARE = [
