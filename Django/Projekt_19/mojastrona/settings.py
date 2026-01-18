@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ogloszenia',
     'rest_framework',   # dodane w ramach task 1 lesson 25
     'products',     # dodane w ramach task 2 lesson 25
+    'notes',     # dodane w ramach task 6 lesson 25
 ]
 
 MIDDLEWARE = [
