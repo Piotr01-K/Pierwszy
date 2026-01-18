@@ -21,6 +21,7 @@ from rest_framework.routers import DefaultRouter
 from products.views import ProductViewSet   #  dodane w ramach task 3 lesson 25
 from tasks.views import set_name, hello   #  dodane w ramach task 5 lesson 25
 from notes.views import NoteViewSet     #  dodane w ramach task 6 lesson 25
+from tasks.views import calculate     #  dodane w ramach task 7 lesson 25
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
@@ -31,4 +32,5 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/set-name/', set_name),    #  dodane w ramach task 5 lesson 25
     path('api/hello/', hello),    #  dodane w ramach task 5 lesson 25
+    path('api/calculate/', calculate),    #  dodane w ramach task 7 lesson 25
 ]
