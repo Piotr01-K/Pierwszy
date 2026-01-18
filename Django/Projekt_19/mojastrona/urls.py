@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #   from tasks.views import ProductViewSet   #  zahashowane przy task 3 lesson 25
 from products.views import ProductViewSet   #  dodane w ramach task 3 lesson 25
+from tasks.views import set_name, hello   #  dodane w ramach task 5 lesson 25
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
@@ -26,4 +27,6 @@ router.register(r'products', ProductViewSet, basename='product')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/set-name/', set_name),    #  dodane w ramach task 5 lesson 25
+    path('api/hello/', hello),    #  dodane w ramach task 5 lesson 25
 ]
