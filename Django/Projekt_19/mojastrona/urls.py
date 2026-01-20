@@ -22,10 +22,13 @@ from products.views import ProductViewSet   #  dodane w ramach task 3 lesson 25
 from tasks.views import set_name, hello   #  dodane w ramach task 5 lesson 25
 from notes.views import NoteViewSet     #  dodane w ramach task 6 lesson 25
 from tasks.views import calculate     #  dodane w ramach task 7 lesson 25
+from products.views import AuthorViewSet, BookViewSet    #  dodane w ramach task 9 lesson 25
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
 router.register(r'notes', NoteViewSet)    #  dodane w ramach task 6 lesson 25
+router.register(r'authors', AuthorViewSet)   #  dodane w ramach task 9 lesson 25
+router.register(r'books', BookViewSet)    #  dodane w ramach task 9 lesson 25
 
 urlpatterns = [
     path('admin/', admin.site.urls),
