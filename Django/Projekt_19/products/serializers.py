@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Product
-from .models import Author, Book    # dodane w ramach task 9 lesson 25
+from .models import Author, Book    # dodane w ramach task 9 i 10 lesson 25
 
 #   Dodane w ramach task 2 Lesson 25
 class ProductSerializer(serializers.ModelSerializer):
