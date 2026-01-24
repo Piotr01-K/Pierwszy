@@ -10,4 +10,6 @@ urlpatterns = [
 
     # JWT – logowanie, refresh tokenu   (dodane task 4 lesson 26)
     path('auth/', include('djoser.urls.jwt')),
+
+    path('api/', include('accounts.urls')), # dodane task 8 lesson 26
 ]

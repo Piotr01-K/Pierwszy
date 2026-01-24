@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',   #  dodane lesson 26 task 2
     'rest_framework_simplejwt',   #  dodane lesson 26 task 2
     'djoser',   #  dodane lesson 26 task 2
+    'accounts',  #  dodane lesson 26 task 8
 ]
 
 MIDDLEWARE = [
