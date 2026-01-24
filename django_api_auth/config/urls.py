@@ -1,6 +1,7 @@
 
 from django.contrib import admin
 from django.urls import path, include
+from accounts.views import ProtectedView   # dodane w ramach task 9 lesson 26
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
 
     path('api/', include('accounts.urls')), # dodane task 8 lesson 26
+    path("protected/", ProtectedView.as_view()),   # dodane task 9 lesson 26
 ]
