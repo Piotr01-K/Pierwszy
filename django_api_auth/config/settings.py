@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',   #  dodane lesson 26 task 2
     'djoser',   #  dodane lesson 26 task 2
     'accounts',  #  dodane lesson 26 task 8
+    'debug_toolbar',   #  dodane lesson 27 task 2
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  #  dodane lesson 27 task 2
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -140,3 +142,7 @@ CACHES = {
         'LOCATION': 'unique-locmem-cache',
     }
 }
+#  dodane lesson 27 task 2
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
