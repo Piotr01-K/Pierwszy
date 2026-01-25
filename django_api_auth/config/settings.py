@@ -133,3 +133,10 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),  # zmienione task 9 lesson 26
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+#  dodane lesson 27 task 1
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-locmem-cache',
+    }
+}
