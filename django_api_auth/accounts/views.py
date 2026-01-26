@@ -6,7 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.cache import cache_page   #  dodane lesson 27 task 3
 from django.utils.decorators import method_decorator   #  dodane lesson 27 task 3
 from rest_framework.permissions import AllowAny   #  dodane lesson 27 task 3
-
+from django.views.decorators.cache import cache_page   #  dodane lesson 27 task 8
+from django.utils.decorators import method_decorator   #  dodane lesson 27 task 8
+from rest_framework.viewsets import ModelViewSet  #  dodane lesson 27 task 8
+from .models import Note    #  dodane lesson 27 task 8
+from .serializers import NoteSerializer    #  dodane lesson 27 task 8
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
@@ -59,3 +63,16 @@ class SelectiveCacheView(APIView):
             "user_info": user_info,
             "expensive_part": expensive_result
         })
+
+#  dodane lesson 27 task 8
+class NoteViewSet(ModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+
+    @method_decorator(cache_page(60 * 10))  # 10 minut
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60 * 1))  # 1 minuta
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)

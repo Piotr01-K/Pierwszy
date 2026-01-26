@@ -17,4 +17,5 @@ urlpatterns = [
     path("protected/", ProtectedView.as_view()),   # dodane task 9 lesson 26
     path('__debug__/', include('debug_toolbar.urls')),   # dodane task 2 lesson 27
     path('selective-cache/', SelectiveCacheView.as_view()),   # dodane task 7 lesson 27
+    path('', include('accounts.urls')),  # dodane task 8 lesson 27
 ]
