@@ -134,8 +134,10 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),  # zmienione task 9 lesson 26
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=5),  # zmienione task 9 lesson 27
+    'AUTH_HEADER_TYPES': ('Bearer',),  # dodane task 9 lesson 27
 }
+
 #  dodane lesson 27 task 1
 CACHES = {
     'default': {
