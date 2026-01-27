@@ -139,12 +139,24 @@ SIMPLE_JWT = {
 }
 
 #  dodane lesson 27 task 1
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#         'LOCATION': 'unique-locmem-cache',
+#     }
+# }
+
+#  dodane lesson 27 task 10
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-locmem-cache',
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
+
 #  dodane lesson 27 task 2
 INTERNAL_IPS = [
     '127.0.0.1',
