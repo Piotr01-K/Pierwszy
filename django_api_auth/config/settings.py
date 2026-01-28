@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'djoser',   #  dodane lesson 26 task 2
     'accounts',  #  dodane lesson 26 task 8
     'debug_toolbar',   #  dodane lesson 27 task 2
+    'drf_spectacular',   #  dodane lesson 28
 ]
 
 MIDDLEWARE = [
@@ -127,6 +128,7 @@ STATIC_URL = 'static/'
 
 #  dodane lesson 26 task 2
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',    # dodane Lesson 28
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -168,4 +170,11 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
+}
+#  dodane lesson 28
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Django API Auth',
+    'DESCRIPTION': 'Dokumentacja API projektu django_api_auth.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }

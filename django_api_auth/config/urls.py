@@ -7,6 +7,11 @@ from rest_framework_simplejwt.views import (    # dodane w ramach task 9 lesson 
     TokenObtainPairView,
     TokenRefreshView,
 )
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +29,7 @@ urlpatterns = [
     path('', include('accounts.urls')),  # dodane task 8 lesson 27
     path('auth/jwt/create/', TokenObtainPairView.as_view(), name='jwt_create'),    # dodane w ramach task 9 lesson 27
     path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),    # dodane w ramach task 9 lesson 27
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
