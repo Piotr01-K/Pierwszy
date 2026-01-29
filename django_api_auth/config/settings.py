@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'djoser',   #  dodane lesson 26 task 2
     'accounts',  #  dodane lesson 26 task 8
     'debug_toolbar',   #  dodane lesson 27 task 2
-    'core'   #  dodane lesson 29 task 1
+    'core',   #  dodane lesson 29 task 1
+    'django_celery_beat',   #  dodane lesson 29 task 4
 ]
 
 MIDDLEWARE = [
@@ -180,3 +181,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'Europe/Warsaw'
+
+# dodane Lesson 29 Task 4
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
