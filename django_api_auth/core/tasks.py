@@ -1,6 +1,7 @@
 from celery import shared_task
 from datetime import datetime   # dodane Lesson 29 Task 3
 from pathlib import Path   # dodane Lesson 29 Task 3
+from django.contrib.auth.models import User  # dodane Lesson 29 Task 4
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -26,3 +27,9 @@ def log_timestamp():
         f.write(f"{now}\n")
 
     return now
+
+# dodane Lesson 29 Task 4
+@shared_task
+def count_users():
+    count = User.objects.count()
+    print(f"Liczba użytkowników w bazie: {count}")

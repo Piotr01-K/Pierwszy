@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .tasks import multiply   # dodane Lesson 29 Task 2
 from .tasks import log_timestamp   # dodane Lesson 29 Task 3
 from django.http import HttpResponse   # dodane Lesson 29 Task 3
+from .tasks import count_users  # dodane Lesson 29 Task 5
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -37,3 +38,8 @@ def multiply_view(request):
 def trigger_log_timestamp(request):
     log_timestamp.delay()
     return HttpResponse("Zapisano timestamp do pliku log.txt")
+
+# dodane Lesson 29 Task 5
+def count_users_view(request):
+    count_users.delay()
+    return HttpResponse("Zadanie count_users zostało uruchomione.")
