@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .tasks import hello_world
 from django.http import JsonResponse
 from .tasks import multiply   # dodane Lesson 29 Task 2
+from .tasks import log_timestamp   # dodane Lesson 29 Task 3
+from django.http import HttpResponse   # dodane Lesson 29 Task 3
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -30,3 +32,8 @@ def multiply_view(request):
         result = task.get(timeout=10)
 
     return render(request, "core/multiply.html", {"result": result})
+
+# dodane Lesson 29 Task 3
+def trigger_log_timestamp(request):
+    log_timestamp.delay()
+    return HttpResponse("Zapisano timestamp do pliku log.txt")
