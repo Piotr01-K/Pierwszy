@@ -1,3 +1,4 @@
+import time    # dodane Lesson 29 Task 8
 from celery import shared_task
 from datetime import datetime   # dodane Lesson 29 Task 3
 from pathlib import Path   # dodane Lesson 29 Task 3
@@ -48,3 +49,10 @@ def update_user_last_login(user_id):
     user.save(update_fields=["last_login"])
 
     print(f"Updated last_login for user id={user_id}")
+
+# dodane Lesson 29 Task 8
+@shared_task
+def simulate_video_processing():
+    print("Start przetwarzania wideo...")
+    time.sleep(15)
+    print("Zakończono przetwarzanie wideo.")

@@ -10,6 +10,7 @@ from .tasks import count_users  # dodane Lesson 29 Task 5
 from django.contrib.auth.decorators import login_required   # dodane Lesson 29 Task 7
 from django.http import HttpResponse   # dodane Lesson 29 Task 7
 from .tasks import update_user_last_login    # dodane Lesson 29 Task 7
+from .tasks import simulate_video_processing   # dodane Lesson 29 Task 8
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -52,3 +53,8 @@ def count_users_view(request):
 def trigger_update_last_login(request, user_id):
     update_user_last_login.delay(user_id)
     return HttpResponse(f"Updated last_login for user {user_id}")
+
+# dodane Lesson 29 Task 8
+def start_video_processing(request):
+    simulate_video_processing.delay()
+    return HttpResponse("Przetwarzanie wideo rozpoczęte!")
