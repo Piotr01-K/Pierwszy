@@ -7,6 +7,9 @@ from .tasks import multiply   # dodane Lesson 29 Task 2
 from .tasks import log_timestamp   # dodane Lesson 29 Task 3
 from django.http import HttpResponse   # dodane Lesson 29 Task 3
 from .tasks import count_users  # dodane Lesson 29 Task 5
+from django.contrib.auth.decorators import login_required   # dodane Lesson 29 Task 7
+from django.http import HttpResponse   # dodane Lesson 29 Task 7
+from .tasks import update_user_last_login    # dodane Lesson 29 Task 7
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -43,3 +46,9 @@ def trigger_log_timestamp(request):
 def count_users_view(request):
     count_users.delay()
     return HttpResponse("Zadanie count_users zostało uruchomione.")
+
+# dodane Lesson 29 Task 7
+@login_required
+def trigger_update_last_login(request, user_id):
+    update_user_last_login.delay(user_id)
+    return HttpResponse(f"Updated last_login for user {user_id}")
