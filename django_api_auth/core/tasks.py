@@ -5,6 +5,7 @@ from pathlib import Path   # dodane Lesson 29 Task 3
 from django.contrib.auth.models import User  # dodane Lesson 29 Task 5
 from django.contrib.auth import get_user_model   # dodane Lesson 29 Task 7
 from django.utils import timezone   # dodane Lesson 29 Task 7
+from core.models import EmailNotification   # dodane Lesson 29 Task 10
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -56,3 +57,19 @@ def simulate_video_processing():
     print("Start przetwarzania wideo...")
     time.sleep(15)
     print("Zakończono przetwarzanie wideo.")
+
+# dodane Lesson 29 Task 10
+@shared_task
+def send_email_notification(email_notification_id):
+    try:
+        email = EmailNotification.objects.get(id=email_notification_id)
+    except EmailNotification.DoesNotExist:
+        return f"EmailNotification {email_notification_id} does not exist"
+
+    # symulacja wysyłki maila
+    time.sleep(5)
+
+    email.sent_at = timezone.now()
+    email.save()
+
+    return f"Email sent to {email.recipient_email}"

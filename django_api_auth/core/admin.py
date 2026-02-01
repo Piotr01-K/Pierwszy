@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+#   dodane Lesson 29 Task 10
+from core.models import EmailNotification
+
+admin.site.register(EmailNotification)
+

@@ -16,4 +16,5 @@ urlpatterns = [
     path("count-users/", views.count_users_view),   # dodane Lesson 29 Task 5
     path("update-last-login/<int:user_id>/", trigger_update_last_login, name="update_last_login"),   # dodane Lesson 29 Task 7
     path("video/start/", start_video_processing, name="start_video_processing"),   # dodane Lesson 29 Task 8
+    path("send-email/", views.trigger_email_notification),  # dodane Lesson 29 Task 10
 ]

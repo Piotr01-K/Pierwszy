@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required   # dodane Lesson 29 T
 from django.http import HttpResponse   # dodane Lesson 29 Task 7
 from .tasks import update_user_last_login    # dodane Lesson 29 Task 7
 from .tasks import simulate_video_processing   # dodane Lesson 29 Task 8
+from core.tasks import send_email_notification    # dodane Lesson 29 Task 10
+from core.models import EmailNotification    # dodane Lesson 29 Task 10
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -58,3 +60,18 @@ def trigger_update_last_login(request, user_id):
 def start_video_processing(request):
     simulate_video_processing.delay()
     return HttpResponse("Przetwarzanie wideo rozpoczęte!")
+
+#  dodane Lesson 29 Task 10
+def trigger_email_notification(request):
+    email = EmailNotification.objects.create(
+        recipient_email="test@example.com",
+        subject="Test email",
+        body="This is a simulated email."
+    )
+
+    send_email_notification.delay(email.id)
+
+    return JsonResponse({
+        "message": "Email sending started",
+        "email_id": email.id
+    })
