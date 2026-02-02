@@ -13,6 +13,8 @@ from .tasks import update_user_last_login    # dodane Lesson 29 Task 7
 from .tasks import simulate_video_processing   # dodane Lesson 29 Task 8
 from core.tasks import send_email_notification    # dodane Lesson 29 Task 10
 from core.models import EmailNotification    # dodane Lesson 29 Task 10
+from celery.result import AsyncResult   # dodane Lesson 29 Task 11
+from core.tasks import long_running_task  # dodane Lesson 29 Task 11
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -75,3 +77,19 @@ def trigger_email_notification(request):
         "message": "Email sending started",
         "email_id": email.id
     })
+
+# dodane Lesson 29 Task 11
+def start_progress_task(request):
+    task = long_running_task.delay()
+    return JsonResponse({"task_id": task.id})
+
+def task_status(request, task_id):
+    result = AsyncResult(task_id)
+
+    response = {
+        "task_id": task_id,
+        "state": result.state,
+        "info": result.info,
+    }
+
+    return JsonResponse(response)

@@ -6,6 +6,8 @@ from django.contrib.auth.models import User  # dodane Lesson 29 Task 5
 from django.contrib.auth import get_user_model   # dodane Lesson 29 Task 7
 from django.utils import timezone   # dodane Lesson 29 Task 7
 from core.models import EmailNotification   # dodane Lesson 29 Task 10
+import time   #  dodane Lesson 29 Task 11
+from celery import shared_task  #  dodane Lesson 29 Task 11
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -73,3 +75,22 @@ def send_email_notification(email_notification_id):
     email.save()
 
     return f"Email sent to {email.recipient_email}"
+
+# dodane Lesson 29 Task 11
+@shared_task(bind=True)
+def long_running_task(self):
+    total = 100
+
+    for i in range(1, total + 1):
+        time.sleep(0.1)
+
+        self.update_state(
+            state="PROGRESS",
+            meta={
+                "current": i,
+                "total": total,
+                "percent": int(i / total * 100),
+            },
+        )
+
+    return {"current": total, "total": total, "percent": 100}

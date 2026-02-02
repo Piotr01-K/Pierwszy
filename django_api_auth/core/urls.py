@@ -6,6 +6,7 @@ from .views import trigger_log_timestamp   # dodane Lesson 29 Task 3
 from . import views   # dodane Lesson 29 Task 5
 from .views import trigger_update_last_login   # dodane Lesson 29 Task 7
 from .views import start_video_processing   # dodane Lesson 29 Task 8
+from .views import start_progress_task, task_status   # dodane Lesson 29 Task 11
 
 # dodane Lesson 29 Task 1
 urlpatterns = [
@@ -17,4 +18,6 @@ urlpatterns = [
     path("update-last-login/<int:user_id>/", trigger_update_last_login, name="update_last_login"),   # dodane Lesson 29 Task 7
     path("video/start/", start_video_processing, name="start_video_processing"),   # dodane Lesson 29 Task 8
     path("send-email/", views.trigger_email_notification),  # dodane Lesson 29 Task 10
+    path("start-progress-task/", start_progress_task, name="start_progress_task"),   # dodane Lesson 29 Task 11
+    path("task-status/<str:task_id>/", task_status, name="task_status"),   # dodane Lesson 29 Task 11
 ]
