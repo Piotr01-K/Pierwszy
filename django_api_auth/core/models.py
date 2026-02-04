@@ -17,3 +17,12 @@ class LogEntry(models.Model):
 
     def __str__(self):
         return f"Log {self.id} ({self.created_at})"
+
+# dodane Lesson 29 Task 13
+class ScrapedPage(models.Model):
+    url = models.URLField()
+    title = models.CharField(max_length=255)
+    scraped_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.scraped_at})"

@@ -10,6 +10,9 @@ import time   #  dodane Lesson 29 Task 11
 from celery import shared_task  #  dodane Lesson 29 Task 11
 from .models import LogEntry   # dodane Lesson 29 Task 12
 from datetime import timedelta   # dodane Lesson 29 Task 12
+import requests   # dodane Lesson 29 Task 13
+from bs4 import BeautifulSoup   # dodane Lesson 29 Task 13
+from .models import ScrapedPage   # dodane Lesson 29 Task 13
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -107,3 +110,21 @@ def delete_old_logs():
     ).delete()
 
     return f"Deleted {deleted_count} old log entries"
+
+# dodane Lesson 29 Task 13
+@shared_task
+def scrape_example_title():
+    url = "https://example.com"
+
+    response = requests.get(url, timeout=10)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    title = soup.title.string.strip()
+
+    ScrapedPage.objects.create(
+        url=url,
+        title=title
+    )
+
+    return title
+
