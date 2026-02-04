@@ -8,6 +8,8 @@ from django.utils import timezone   # dodane Lesson 29 Task 7
 from core.models import EmailNotification   # dodane Lesson 29 Task 10
 import time   #  dodane Lesson 29 Task 11
 from celery import shared_task  #  dodane Lesson 29 Task 11
+from .models import LogEntry   # dodane Lesson 29 Task 12
+from datetime import timedelta   # dodane Lesson 29 Task 12
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -94,3 +96,14 @@ def long_running_task(self):
         )
 
     return {"current": total, "total": total, "percent": 100}
+
+# dodane Lesson 29 Task 12
+@shared_task
+def delete_old_logs():
+    cutoff_date = timezone.now() - timedelta(days=90)
+
+    deleted_count, _ = LogEntry.objects.filter(
+        created_at__lt=cutoff_date
+    ).delete()
+
+    return f"Deleted {deleted_count} old log entries"
