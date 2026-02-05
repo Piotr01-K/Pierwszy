@@ -1,0 +1,47 @@
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required     #   dodaję w ramach task 3 lesson 24
+from django.shortcuts import render, redirect    #   dodaję w ramach task 3 lesson 24 / # redirect dodane przy task 4 lesson 24
+#  from django.contrib.auth.forms import UserCreationForm   # zahashowane przy task 6 lesson 24
+from django.contrib import messages
+from .forms import CustomUserCreationForm   #  dodane w ramach task 6 lesson 24
+from django.contrib.auth import login     #  dodane w ramach task 9 lesson 24
+from django.contrib.admin.views.decorators import staff_member_required    #  dodane w ramach task 10 lesson 24
+from django.contrib.auth.models import User     #  dodane w ramach task 10 lesson 24
+
+def info_view(request):
+    return HttpResponse("<h1>Informacje o stronie</h1>")    #  dodałem do task 1 lesson 20
+
+def rules_view(request):
+    return HttpResponse("<h1>Regulamin strony</h1>")    #  dodałem do task 1 lesson 20
+
+def user_profile_view(request, username):
+    return HttpResponse(f"<h1>Witaj na profilu, {username}!</h1>")   #  dodałem do task 2 lesson 20
+
+def about_view(request):
+    return HttpResponse("<h2>To jest strona o nas (ABOUT)</h2>")   #  dodałem w ramach task 5 lesson 20
+
+#   dodaję w ramach task 3 lesson 24:
+@login_required
+def profile(request):
+    return render(request, 'users/profile.html')
+
+def register(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            #  form.save()   # zahashowane w ramach task 9 lesson 24 (na nw. automatyczne logowanie)
+            user = form.save()    # dodane w ramach task 9 lesson 24  (zapis do db)
+            login(request, user)    # dodane w ramach task 9 lesson 24  (automatyczne logowanie)
+            messages.success(request, "Rejestracja zakończona pomyślnie. Możesz się zalogować.")
+            #  return redirect("login")  # zahashowane w ramach task 9 lesson 24 (na automatyczne logowanie)
+            return redirect("home")   # dodane w ramach task 9 lesson 24  (automatyczne logowanie)
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, "users/register.html", {"form": form})
+
+#   dodane w ramach task 10 lesson 24   (widok tylko dla admina)
+@staff_member_required
+def users_list(request):
+    users = User.objects.all()
+    return render(request, "users/users_list.html", {"users": users})
