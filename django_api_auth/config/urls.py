@@ -7,6 +7,8 @@ from rest_framework_simplejwt.views import (    # dodane w ramach task 9 lesson 
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.conf import settings    # dodane w ramach task 14 lesson 29
+from django.conf.urls.static import static   # dodane w ramach task 14 lesson 29
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +28,7 @@ urlpatterns = [
     path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),    # dodane w ramach task 9 lesson 27
     path('api/core/', include('core.urls')),  # dodane w ramach Task 1 Lesson 29
     path("core/", include("core.urls")),  # dodane w ramach Task 1 Lesson 29
-]
+    ]
+
+ # dodane w ramach task 14 lesson 29
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

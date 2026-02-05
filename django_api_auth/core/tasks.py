@@ -13,6 +13,10 @@ from datetime import timedelta   # dodane Lesson 29 Task 12
 import requests   # dodane Lesson 29 Task 13
 from bs4 import BeautifulSoup   # dodane Lesson 29 Task 13
 from .models import ScrapedPage   # dodane Lesson 29 Task 13
+import csv   # dodane Lesson 29 Task 14
+import os   # dodane Lesson 29 Task 14
+from celery import shared_task   # dodane Lesson 29 Task 14
+from django.conf import settings   # dodane Lesson 29 Task 14
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -128,3 +132,24 @@ def scrape_example_title():
 
     return title
 
+# dodane Lesson 29 Task 14
+User = get_user_model()
+
+@shared_task(bind=True)
+def generate_users_csv(self):
+    reports_dir = os.path.join(settings.MEDIA_ROOT, "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+
+    filename = f"users_report_{self.request.id}.csv"
+    filepath = os.path.join(reports_dir, filename)
+
+    with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["ID", "Username", "Email"])
+
+        for user in User.objects.all():
+            writer.writerow([user.id, user.username, user.email])
+
+    return {
+        "file": f"reports/{filename}"
+    }

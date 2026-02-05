@@ -15,6 +15,8 @@ from core.tasks import send_email_notification    # dodane Lesson 29 Task 10
 from core.models import EmailNotification    # dodane Lesson 29 Task 10
 from celery.result import AsyncResult   # dodane Lesson 29 Task 11
 from core.tasks import long_running_task  # dodane Lesson 29 Task 11
+from core.tasks import generate_users_csv   # dodane Lesson 29 Task 14
+from django.conf import settings   # dodane Lesson 29 Task 14
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -93,3 +95,25 @@ def task_status(request, task_id):
     }
 
     return JsonResponse(response)
+
+# dodane Lesson 29 Task 14
+def start_users_csv(request):
+    task = generate_users_csv.delay()
+    return JsonResponse({
+        "task_id": task.id,
+        "status": "started"
+    })
+
+def task_result(request, task_id):
+    result = AsyncResult(str(task_id))
+
+    if result.state == "SUCCESS":
+        file_path = result.result.get("file")
+        return JsonResponse({
+            "status": result.state,
+            "download_url": settings.MEDIA_URL + file_path
+        })
+
+    return JsonResponse({
+        "status": result.state
+    })

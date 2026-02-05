@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta   #  dodane lesson 26 task 2
 import os
-import time   #  dodane Lesson 29 Task 11
-from celery import shared_task  #  dodane Lesson 29 Task 11
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -186,4 +185,9 @@ CELERY_TIMEZONE = 'Europe/Warsaw'
 
 # dodane Lesson 29 Task 4
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# dodane Lesson 29 Task 14
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 
