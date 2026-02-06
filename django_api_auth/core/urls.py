@@ -22,4 +22,5 @@ urlpatterns = [
     path("task-status/<str:task_id>/", task_status, name="task_status"),   # dodane Lesson 29 Task 11
     path("start-users-csv/", views.start_users_csv),   # dodane Lesson 29 Task 14
     path("task-result/<uuid:task_id>/", views.task_result),   # dodane Lesson 29 Task 14
+    path("start-retry-task/", views.start_retry_task),   # dodane Lesson 29 Task 15
 ]

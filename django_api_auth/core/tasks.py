@@ -153,3 +153,17 @@ def generate_users_csv(self):
     return {
         "file": f"reports/{filename}"
     }
+
+# dodane Lesson 29 Task 15
+@shared_task(bind=True)
+def fetch_non_existing_url(self):
+    try:
+        response = requests.get("http://this-url-does-not-exist-123456.com")
+        return response.status_code
+
+    except Exception as exc:
+        raise self.retry(
+            exc=exc,
+            countdown=60,
+            max_retries=3
+        )

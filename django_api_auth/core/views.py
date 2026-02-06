@@ -17,6 +17,7 @@ from celery.result import AsyncResult   # dodane Lesson 29 Task 11
 from core.tasks import long_running_task  # dodane Lesson 29 Task 11
 from core.tasks import generate_users_csv   # dodane Lesson 29 Task 14
 from django.conf import settings   # dodane Lesson 29 Task 14
+from core.tasks import fetch_non_existing_url   # dodane Lesson 29 Task 15
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -116,4 +117,12 @@ def task_result(request, task_id):
 
     return JsonResponse({
         "status": result.state
+    })
+
+# dodane Lesson 29 Task 15
+def start_retry_task(request):
+    task = fetch_non_existing_url.delay()
+    return JsonResponse({
+        "task_id": task.id,
+        "status": "started"
     })
