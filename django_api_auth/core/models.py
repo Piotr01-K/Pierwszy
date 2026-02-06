@@ -26,3 +26,16 @@ class ScrapedPage(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.scraped_at})"
+    
+#  dodane Lesson 29 Task 15
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    classification_result = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image {self.id}"

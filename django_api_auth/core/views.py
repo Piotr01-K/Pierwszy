@@ -18,6 +18,8 @@ from core.tasks import long_running_task  # dodane Lesson 29 Task 11
 from core.tasks import generate_users_csv   # dodane Lesson 29 Task 14
 from django.conf import settings   # dodane Lesson 29 Task 14
 from core.tasks import fetch_non_existing_url   # dodane Lesson 29 Task 15
+from .models import UploadedImage  # dodane Lesson 29 Task 16
+from .tasks import classify_image   # dodane Lesson 29 Task 16
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -125,4 +127,21 @@ def start_retry_task(request):
     return JsonResponse({
         "task_id": task.id,
         "status": "started"
+    })
+
+# dodane Lesson 29 Task 16
+@api_view(['POST'])
+def upload_image(request):
+    image = request.FILES.get('image')
+
+    if not image:
+        return Response({"error": "No image provided"}, status=400)
+
+    obj = UploadedImage.objects.create(image=image)
+
+    classify_image.delay(obj.id)
+
+    return Response({
+        "message": "Image uploaded",
+        "image_id": obj.id
     })

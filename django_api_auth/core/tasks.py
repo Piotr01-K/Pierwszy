@@ -17,6 +17,8 @@ import csv   # dodane Lesson 29 Task 14
 import os   # dodane Lesson 29 Task 14
 from celery import shared_task   # dodane Lesson 29 Task 14
 from django.conf import settings   # dodane Lesson 29 Task 14
+from PIL import Image   # dodane Lesson 29 Task 16
+from .models import UploadedImage  # dodane Lesson 29 Task 16
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -167,3 +169,24 @@ def fetch_non_existing_url(self):
             countdown=60,
             max_retries=3
         )
+#  dodane Lesson 29 Task 16    
+@shared_task
+def classify_image(image_id):
+    image_obj = UploadedImage.objects.get(id=image_id)
+
+    img = Image.open(image_obj.image.path)
+
+    width, height = img.size
+    mode = img.mode
+
+    if mode == "L":
+        color_type = "grayscale"
+    else:
+        color_type = "color"
+
+    result = f"{color_type}, {width}x{height}"
+
+    image_obj.classification_result = result
+    image_obj.save()
+
+    return result

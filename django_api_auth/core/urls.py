@@ -7,6 +7,7 @@ from . import views   # dodane Lesson 29 Task 5
 from .views import trigger_update_last_login   # dodane Lesson 29 Task 7
 from .views import start_video_processing   # dodane Lesson 29 Task 8
 from .views import start_progress_task, task_status   # dodane Lesson 29 Task 11
+from .views import upload_image  # dodane Lesson 29 Task 16
 
 # dodane Lesson 29 Task 1
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     path("start-users-csv/", views.start_users_csv),   # dodane Lesson 29 Task 14
     path("task-result/<uuid:task_id>/", views.task_result),   # dodane Lesson 29 Task 14
     path("start-retry-task/", views.start_retry_task),   # dodane Lesson 29 Task 15
+    path('upload-image/', upload_image), # dodane Lesson 29 Task 16
 ]

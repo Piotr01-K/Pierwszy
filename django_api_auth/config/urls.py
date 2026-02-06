@@ -28,6 +28,9 @@ urlpatterns = [
     path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),    # dodane w ramach task 9 lesson 27
     path('api/core/', include('core.urls')),  # dodane w ramach Task 1 Lesson 29
     path("core/", include("core.urls")),  # dodane w ramach Task 1 Lesson 29
+    path('api/auth/jwt/create/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/auth/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include('core.urls')),
     ]
 
  # dodane w ramach task 14 lesson 29
