@@ -210,3 +210,9 @@ def save_result_to_file(result):
     with open(file_path, "w") as f:
         f.write(f"Final result: {result}")
     return str(file_path)
+
+# dodane Lesson 29 Task 18
+@shared_task(queue="priority_queue")
+def send_critical_email(email):
+    time.sleep(5)  # symulacja
+    print(f"CRITICAL EMAIL sent to {email}")
