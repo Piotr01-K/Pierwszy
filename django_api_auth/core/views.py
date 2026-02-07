@@ -20,6 +20,12 @@ from django.conf import settings   # dodane Lesson 29 Task 14
 from core.tasks import fetch_non_existing_url   # dodane Lesson 29 Task 15
 from .models import UploadedImage  # dodane Lesson 29 Task 16
 from .tasks import classify_image   # dodane Lesson 29 Task 16
+from celery import chain   # dodane Lesson 29 Task 17
+from core.tasks import (
+    generate_random_number,
+    multiply_by_ten,
+    save_result_to_file,
+)
 
 # dodane Lesson 29 Task 1
 @api_view(['GET'])
@@ -144,4 +150,19 @@ def upload_image(request):
     return Response({
         "message": "Image uploaded",
         "image_id": obj.id
+    })
+
+# dodane Lesson 29 Task 17
+@api_view(["POST"])
+def start_chain_task(request):
+    task_chain = chain(
+        generate_random_number.s(),
+        multiply_by_ten.s(),
+        save_result_to_file.s(),
+    )
+
+    result = task_chain.apply_async()
+
+    return Response({
+        "chain_task_id": result.id
     })

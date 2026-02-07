@@ -19,6 +19,7 @@ from celery import shared_task   # dodane Lesson 29 Task 14
 from django.conf import settings   # dodane Lesson 29 Task 14
 from PIL import Image   # dodane Lesson 29 Task 16
 from .models import UploadedImage  # dodane Lesson 29 Task 16
+import random   # dodane Lesson 29 Task 17
 
 # dodane Lesson 29 Task 1
 @shared_task
@@ -190,3 +191,22 @@ def classify_image(image_id):
     image_obj.save()
 
     return result
+
+# dodane Lesson 29 Task 17
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+@shared_task
+def generate_random_number():
+    number = random.randint(1, 100)
+    return number
+
+@shared_task
+def multiply_by_ten(number):
+    return number * 10
+
+@shared_task
+def save_result_to_file(result):
+    file_path = BASE_DIR / "media" / "chain_result.txt"
+    with open(file_path, "w") as f:
+        f.write(f"Final result: {result}")
+    return str(file_path)
