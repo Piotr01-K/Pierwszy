@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiply</title>
+</head>
+<body>
+    <h1>Multiply (Celery)</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="number" name="a" placeholder="Liczba A" required>
+        <input type="number" name="b" placeholder="Liczba B" required>
+        <button type="submit">Oblicz</button>
+    </form>
+
+    {% if result is not None %}
+        <h2>Wynik: {{ result }}</h2>
+    {% endif %}
+</body>
+</html>
