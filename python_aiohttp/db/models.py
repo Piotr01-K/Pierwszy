@@ -1,8 +1,10 @@
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from .base import Base
 
+# dodane lesson 32 task 7
+class Base(DeclarativeBase):
+    pass
 
 class Product(Base):
     __tablename__ = "products"
