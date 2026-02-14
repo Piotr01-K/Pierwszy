@@ -7,22 +7,6 @@ from db import models  # ważne: rejestruje modele w SQLAlchemy
 
 
 # =========================
-# GET /products  (lista)
-# =========================
-async def list_products(request):
-    async with SessionLocal() as session:
-        result = await session.execute(select(Product))
-        products = result.scalars().all()
-
-    data = [
-        {"id": p.id, "name": p.name, "price": p.price}
-        for p in products
-    ]
-
-    return web.json_response(data)
-
-
-# =========================
 # POST /products (tworzenie)
 # =========================
 async def create_product(request):
@@ -45,6 +29,22 @@ async def create_product(request):
         status=201,
     )
 
+# =========================
+# GET /products  (lista)
+# =========================
+async def list_products(request):
+    async with SessionLocal() as session:
+        result = await session.execute(select(Product))
+        products = result.scalars().all()
+
+    data = [
+        {"id": p.id, "name": p.name, "price": p.price}
+        for p in products
+    ]
+
+    return web.json_response(data)
+
+
 
 # =========================
 # TWORZENIE APPKI
@@ -57,6 +57,8 @@ async def create_app():
         web.get("/products", list_products),
         web.post("/products", create_product),
         web.get("/products/{id}", get_product),   # dodane Lesson 32 task 11
+        web.patch("/products/{id}", update_product),  # dodane Lesson 32 task 14
+        web.put("/products/{id}", update_product),    # dodane Lesson 32 task 14
     ])
     return app
 
@@ -83,8 +85,42 @@ async def get_product(request):
     )
 
 
+    # PATCH /products/{id}
+async def update_product(request):
+    product_id = int(request.match_info["id"])
+    data = await request.json()
+
+    async with SessionLocal() as session:
+        # 1️⃣ pobieramy produkt z bazy
+        result = await session.execute(
+            select(Product).where(Product.id == product_id)
+        )
+        product = result.scalar_one_or_none()
+
+        if not product:
+            raise web.HTTPNotFound(text="Produkt nie istnieje")
+
+        # 2️⃣ aktualizujemy tylko pola które przyszły w JSON
+        if "name" in data:
+            product.name = data["name"]
+
+        if "price" in data:
+            product.price = data["price"]
+
+        # 3️⃣ zapis do bazy
+        await session.commit()
+        await session.refresh(product)
+
+    return web.json_response({
+        "id": product.id,
+        "name": product.name,
+        "price": product.price,
+    })
+
+
 # =========================
 # START SERWERA
 # =========================
 if __name__ == "__main__":
     web.run_app(create_app())
+
