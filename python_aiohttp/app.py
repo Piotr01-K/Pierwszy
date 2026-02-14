@@ -56,8 +56,31 @@ async def create_app():
     app.add_routes([
         web.get("/products", list_products),
         web.post("/products", create_product),
+        web.get("/products/{id}", get_product),   # dodane Lesson 32 task 11
     ])
     return app
+
+# dodane lesson 32 task 11
+# GET /products/{id}
+async def get_product(request):
+    product_id = int(request.match_info["id"])
+
+    async with SessionLocal() as session:
+        result = await session.execute(
+            select(Product).where(Product.id == product_id)
+        )
+        product = result.scalar_one_or_none()
+
+    if product is None:
+        raise web.HTTPNotFound(text="Produkt nie istnieje")
+
+    return web.json_response(
+        {
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+        }
+    )
 
 
 # =========================
