@@ -45,3 +45,6 @@ static/
 Thumbs.db
 
 django_cache/
+
+*.db
+prodeucts.db
