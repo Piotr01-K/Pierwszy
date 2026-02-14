@@ -59,6 +59,7 @@ async def create_app():
         web.get("/products/{id}", get_product),   # dodane Lesson 32 task 11
         web.patch("/products/{id}", update_product),  # dodane Lesson 32 task 14
         web.put("/products/{id}", update_product),    # dodane Lesson 32 task 14
+        web.delete("/products/{id}", delete_product),   # dodane Lesson 32 task 15
     ])
     return app
 
@@ -117,6 +118,28 @@ async def update_product(request):
         "price": product.price,
     })
 
+# dodane lesson 32 task 15
+# DELETE /products/{id}
+async def delete_product(request):
+    product_id = int(request.match_info["id"])
+
+    async with SessionLocal() as session:
+        # 1️⃣ Szukamy produktu
+        result = await session.execute(
+            select(Product).where(Product.id == product_id)
+        )
+        product = result.scalar_one_or_none()
+
+        # 2️⃣ Jeśli nie istnieje → 404
+        if product is None:
+            raise web.HTTPNotFound(text="Produkt nie istnieje")
+
+        # 3️⃣ Usuwamy produkt
+        await session.delete(product)
+        await session.commit()
+
+    # 4️⃣ Zwracamy PUSTĄ odpowiedź z kodem 204
+    return web.Response(status=204)
 
 # =========================
 # START SERWERA
