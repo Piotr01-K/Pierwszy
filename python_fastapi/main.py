@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import time
 import logging
 from fastapi.security import APIKeyHeader
-from fastapi import Security
+from fastapi import Security, HTTPException, status
 import asyncio
 from datetime import datetime   # dodane Lesson 33 task 1
 import random # dodane Lesson 33 task 1
@@ -200,13 +200,16 @@ async def get_books():
 
 @app.get("/books/{book_id}")
 async def get_book(book_id: int):
-    # sprawdzamy czy książka istnieje
+    # sprawdzamy czy książka istnieje, jak brak do błąd 404
     if book_id not in books_db:
-        return {"error": "Book not found"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Book not found"
+        )
 
     return books_db[book_id]
 
-@app.post("/books")
+@app.post("/books, status_code=status.HTTP_201_CREATED")
 async def create_book(book: Book):
     global next_book_id  # używamy globalnego licznika ID
 
@@ -223,13 +226,15 @@ async def create_book(book: Book):
 
     return response
 
-@app.delete("/books/{book_id}")
+@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT))
 async def delete_book(book_id: int):
-    # sprawdzamy czy istnieje
+    # sprawdzamy czy istnieje, jeśli nie błąd 404
     if book_id not in books_db:
-        return {"error": "Book not found"}
-
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Book not found"
+        )
     # usuwamy z "bazy"
     del books_db[book_id]
 
-    return {"message": "Book deleted"}
+    return None  # 204 nie zwraca body
