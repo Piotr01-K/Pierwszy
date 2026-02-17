@@ -8,7 +8,7 @@ from fastapi import Security, HTTPException, status
 import asyncio
 from datetime import datetime   # dodane Lesson 33 task 1
 import random # dodane Lesson 33 task 1
-from pydantic import BaseModel  # dodane Lesson 33 task 4
+from pydantic import BaseModel, EmailStr  # dodane Lesson 33 task 4, 5
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -35,8 +35,19 @@ class Book(BaseModel):
     title: str
     author: str
 
+# dodane Lesson 33 task 7
+# ===== MODEL USER =====
+class User(BaseModel):
+    name: str
+    email: EmailStr  # automatyczna walidacja email
+
 books_db = {}   # Nasza "baza danych" w pamięci (słownik)
 next_book_id = 1  # licznik ID (auto-increment jak w SQL)
+
+# dodane Lesson 33 task 7
+# prosta baza użytkowników w pamięci
+users_db = {}
+next_user_id = 1
 
 # middleware 1 — mierzenie czasu requestu
 @app.middleware("http")
@@ -238,3 +249,14 @@ async def delete_book(book_id: int):
     del books_db[book_id]
 
     return None  # 204 nie zwraca body
+
+# dodane Lesson 33 task 7
+@app.post("/users", status_code=status.HTTP_201_CREATED)
+async def create_user(user: User):
+    global next_user_id
+
+    # zapis do "bazy"
+    users_db[next_user_id] = user
+    next_user_id += 1
+
+    return user
