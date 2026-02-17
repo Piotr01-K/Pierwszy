@@ -1,173 +1,120 @@
-from fastapi import FastAPI, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from typing import List
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+import time
+import logging
+from fastapi.security import APIKeyHeader
+from fastapi import Security
+import asyncio
 
-from database import get_db, init_db
-from models import UserORM, OrderORM
-from schemas import UserCreate, UserUpdate, UserResponse, UserWithOrders
-from schemas import OrderCreate, OrderResponse
 
-app = FastAPI(title="FastAPI with Database")
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+api_key_header = APIKeyHeader(name="X-API-Key")
 
-# uruchamia się przy starcie serwera
+app = FastAPI()
+
+class AppState:
+    db_connection = None
+    cache = {}
+    background_worker_task = None
+
+app.state = AppState()
+
+
+# middleware 1 — mierzenie czasu requestu
+@app.middleware("http")
+async def log_request_time(request: Request, call_next):
+    start_time = time.time()
+    logging.info(f"Request started: {request.method} {request.url.path}")
+
+    response = await call_next(request)
+
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    logging.info(f"Request completed in {process_time:.3f}s")
+
+    return response
+
+
+# middleware 2 — dodawanie nagłówków
+@app.middleware("http")
+async def add_custom_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Custom-Header"] = "FastAPI-2024"
+    response.headers["X-Request-ID"] = str(id(request))
+    return response
+
+
+# middleware 3 — prosty API KEY
+@app.middleware("http")
+async def verify_api_key(request: Request, call_next):
+     # pozwalamy Swaggerowi działać bez klucza
+    if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
+        return await call_next(request)
+
+    api_key = request.headers.get(API_KEY_NAME)
+
+    if api_key != "secret-key-123":
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "Invalid or missing API Key"},
+        )
+
+    return await call_next(request)
+
+
+# CORS middleware (dla frontendu)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/test")
+async def test_endpoint():
+    return {"message": "Hello!"}
+
+
+async def background_worker():
+    try:
+        while True:
+            logging.info("Background worker: checking for tasks...")
+            await asyncio.sleep(60)
+    except asyncio.CancelledError:
+        logging.info("Background worker cancelled")
+        raise
+
 @app.on_event("startup")
 async def startup_event():
-    await init_db()
-    print("Database initialized!")
+    logging.info("Application starting up...")
 
-# ===============================
-# CREATE USER
-# ===============================
-@app.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(
-    user: UserCreate,
-    db: AsyncSession = Depends(get_db)
-):
-    # sprawdzamy czy username istnieje
-    result = await db.execute(
-        select(UserORM).where(UserORM.username == user.username)
-    )
-    if result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Username already exists")
+    app.state.db_connection = "connected"
+    logging.info("Database initialized")
 
-    db_user = UserORM(**user.model_dump())
+    app.state.cache = {
+        "config": {"max_users": 1000},
+        "version": "1.0.0"
+    }
+    logging.info("Cache loaded")
 
-    db.add(db_user)
-    await db.commit()
-    await db.refresh(db_user)
+    app.state.background_worker_task = asyncio.create_task(background_worker())
+    logging.info("Background worker started")
 
-    return db_user
+@app.on_event("shutdown")
+async def shutdown_event():
+    logging.info("Application shutting down...")
 
+    if app.state.background_worker_task:
+        app.state.background_worker_task.cancel()
+        try:
+            await app.state.background_worker_task
+        except asyncio.CancelledError:
+            logging.info("Background worker cancelled")
 
-# ===============================
-# GET ALL USERS
-# ===============================
-@app.get("/users", response_model=List[UserResponse])
-async def get_users(
-    skip: int = 0,
-    limit: int = 100,
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(
-        select(UserORM)
-        .offset(skip)
-        .limit(limit)
-        .order_by(UserORM.created_at.desc())
-    )
-    users = result.scalars().all()
-    return users
-
-
-# ===============================
-# GET USER BY ID
-# ===============================
-@app.get("/users/{user_id}", response_model=UserResponse)
-async def get_user(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(
-        select(UserORM).where(UserORM.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
-
-
-# ===============================
-# GET USER WITH ORDERS
-# ===============================
-@app.get("/users/{user_id}/with-orders", response_model=UserWithOrders)
-async def get_user_with_orders(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(
-        select(UserORM)
-        .options(selectinload(UserORM.orders))
-        .where(UserORM.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
-
-
-# ===============================
-# UPDATE USER
-# ===============================
-@app.patch("/users/{user_id}", response_model=UserResponse)
-async def update_user(
-    user_id: int,
-    user_update: UserUpdate,
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(
-        select(UserORM).where(UserORM.id == user_id)
-    )
-    db_user = result.scalar_one_or_none()
-
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    update_data = user_update.model_dump(exclude_unset=True)
-
-    for field, value in update_data.items():
-        setattr(db_user, field, value)
-
-    await db.commit()
-    await db.refresh(db_user)
-
-    return db_user
-
-
-# ===============================
-# DELETE USER
-# ===============================
-@app.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(
-        select(UserORM).where(UserORM.id == user_id)
-    )
-    db_user = result.scalar_one_or_none()
-
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    await db.delete(db_user)
-    await db.commit()
-
-    return None
-
-
-# ===============================
-# CREATE ORDER
-# ===============================
-@app.post("/orders", response_model=OrderResponse, status_code=201)
-async def create_order(
-    order: OrderCreate,
-    db: AsyncSession = Depends(get_db)
-):
-    # sprawdz czy user istnieje
-    result = await db.execute(
-        select(UserORM).where(UserORM.id == order.user_id)
-    )
-    if not result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="User not found")
-
-    db_order = OrderORM(**order.model_dump())
-    db.add(db_order)
-    await db.commit()
-    await db.refresh(db_order)
-
-    return db_order
+    logging.info("Database connection closed")
+    logging.info("Cache saved to disk")
