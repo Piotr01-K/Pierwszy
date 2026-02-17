@@ -139,3 +139,30 @@ async def greet_user(
     name: str = Path(min_length=2)
 ):
     return {"message": f"Hello {name}"}
+
+# dodane Lesson 33 task 3
+@app.get("/calculate")
+async def calculate(
+    a: int,
+    b: int,
+    operation: str = "add"
+):
+    if operation == "add":
+        result = a + b
+    elif operation == "subtract":
+        result = a - b
+    elif operation == "multiply":
+        result = a * b
+    elif operation == "divide":
+        if b == 0:
+            return {"error": "Division by zero"}
+        result = a / b
+    else:
+        return {"error": "Invalid operation"}
+
+    return {
+        "a": a,
+        "b": b,
+        "operation": operation,
+        "result": result
+    }
