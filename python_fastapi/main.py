@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Path
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import time
@@ -132,3 +132,10 @@ async def get_time():
 @app.get("/random")
 async def get_random_number():
     return {"number": random.randint(1, 100)}
+
+# dodane Lesson 33 task 2
+@app.get("/greet/{name}")
+async def greet_user(
+    name: str = Path(min_length=2)
+):
+    return {"message": f"Hello {name}"}
