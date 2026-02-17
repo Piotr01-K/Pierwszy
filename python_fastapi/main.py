@@ -29,6 +29,14 @@ class Product(BaseModel):
     price: float
     quantity: int
 
+# dodane Lesson 33 task 5
+# Model książki (walidacja JSON z requestu)
+class Book(BaseModel):
+    title: str
+    author: str
+
+books_db = {}   # Nasza "baza danych" w pamięci (słownik)
+next_book_id = 1  # licznik ID (auto-increment jak w SQL)
 
 # middleware 1 — mierzenie czasu requestu
 @app.middleware("http")
@@ -185,3 +193,43 @@ async def create_product(product: Product):
         "quantity": product.quantity,
         "total_price": total_price
     }
+# dodane Lesson 33 task 5
+@app.get("/books")
+async def get_books():
+    return books_db  # zwracamy wszystkie książki jako listę
+
+@app.get("/books/{book_id}")
+async def get_book(book_id: int):
+    # sprawdzamy czy książka istnieje
+    if book_id not in books_db:
+        return {"error": "Book not found"}
+
+    return books_db[book_id]
+
+@app.post("/books")
+async def create_book(book: Book):
+    global next_book_id  # używamy globalnego licznika ID
+
+    # zapisujemy książkę w "bazie"
+    books_db[next_book_id] = book
+
+    # przygotowujemy odpowiedź
+    response = {
+        "id": next_book_id,
+        "book": book
+    }
+
+    next_book_id += 1  # zwiększamy licznik ID
+
+    return response
+
+@app.delete("/books/{book_id}")
+async def delete_book(book_id: int):
+    # sprawdzamy czy istnieje
+    if book_id not in books_db:
+        return {"error": "Book not found"}
+
+    # usuwamy z "bazy"
+    del books_db[book_id]
+
+    return {"message": "Book deleted"}
