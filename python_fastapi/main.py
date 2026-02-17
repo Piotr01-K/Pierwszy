@@ -8,6 +8,7 @@ from fastapi import Security
 import asyncio
 from datetime import datetime   # dodane Lesson 33 task 1
 import random # dodane Lesson 33 task 1
+from pydantic import BaseModel  # dodane Lesson 33 task 4
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -21,6 +22,12 @@ class AppState:
     background_worker_task = None
 
 app.state = AppState()
+
+# dodane Lesson 33 task 4
+class Product(BaseModel):
+    name: str
+    price: float
+    quantity: int
 
 
 # middleware 1 — mierzenie czasu requestu
@@ -165,4 +172,16 @@ async def calculate(
         "b": b,
         "operation": operation,
         "result": result
+    }
+
+# dodane Lesson 33 task 4
+@app.post("/products")
+async def create_product(product: Product):
+    total_price = product.price * product.quantity
+
+    return {
+        "name": product.name,
+        "price": product.price,
+        "quantity": product.quantity,
+        "total_price": total_price
     }
