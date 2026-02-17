@@ -226,7 +226,7 @@ async def create_book(book: Book):
 
     return response
 
-@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT))
+@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int):
     # sprawdzamy czy istnieje, jeśli nie błąd 404
     if book_id not in books_db:
