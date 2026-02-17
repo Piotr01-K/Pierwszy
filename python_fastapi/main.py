@@ -6,7 +6,8 @@ import logging
 from fastapi.security import APIKeyHeader
 from fastapi import Security
 import asyncio
-
+from datetime import datetime   # dodane Lesson 33 task 1
+import random # dodane Lesson 33 task 1
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -118,3 +119,16 @@ async def shutdown_event():
 
     logging.info("Database connection closed")
     logging.info("Cache saved to disk")
+
+# dodane Lesson 33 task 1
+@app.get("/")
+async def root():
+    return {"message": "Hello"}
+
+@app.get("/time")
+async def get_time():
+    return {"time": datetime.now()}
+
+@app.get("/random")
+async def get_random_number():
+    return {"number": random.randint(1, 100)}
