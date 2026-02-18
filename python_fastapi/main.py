@@ -3,18 +3,19 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import time
 import logging
-from fastapi.security import APIKeyHeader
-from fastapi import Security, HTTPException, status
+from fastapi import HTTPException, status, Depends, Header
 import asyncio
 from datetime import datetime   # dodane Lesson 33 task 1
 import random # dodane Lesson 33 task 1
 from pydantic import BaseModel, EmailStr  # dodane Lesson 33 task 4, 5
 # import routerów
 from routers import books, authors  
+from dependencies import verify_api_key
+from fastapi.openapi.utils import get_openapi
 
-API_KEY_NAME = "X-API-Key"
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
-api_key_header = APIKeyHeader(name="X-API-Key")
+# API_KEY_NAME = "X-API-Key"
+# api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+# api_key_header = APIKeyHeader(name="X-API-Key")
 
 app = FastAPI(
     title="My FastAPI Learning App",
@@ -58,6 +59,20 @@ next_book_id = 1  # licznik ID (auto-increment jak w SQL)
 users_db = {}
 next_user_id = 1
 
+# dodane Lesson 33 task 10
+# Dependency sprawdzające API KEY
+async def verify_api_key(x_api_key: str = Header(...)):
+    """
+    Sprawdza czy w nagłówku X-API-Key jest poprawny klucz.
+    Header(...) = wymagany nagłówek.
+    """
+
+    if x_api_key != "secret-key-123":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API Key"
+        )
+    
 # middleware 1 — mierzenie czasu requestu
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
@@ -220,11 +235,11 @@ async def create_product(product: Product):
     }
 # dodane Lesson 33 task 5
 @app.get("/books", tags=["Books"])
-async def get_books():
+async def get_books(api_key: str = Depends(verify_api_key)):
     return books_db  # zwracamy wszystkie książki jako listę
 
 @app.get("/books/{book_id}", tags=["Books"])
-async def get_book(book_id: int):
+async def get_book(book_id: int, api_key: str = Depends(verify_api_key)):
     # sprawdzamy czy książka istnieje, jak brak do błąd 404
     if book_id not in books_db:
         raise HTTPException(
@@ -266,7 +281,7 @@ async def delete_book(book_id: int):
 
 # dodane Lesson 33 task 7
 @app.post("/users", tags=["Users"], status_code=status.HTTP_201_CREATED)
-async def create_user(user: User):
+async def create_user(user: User, api_key: str = Depends(verify_api_key)):
     global next_user_id
 
     # zapis do "bazy"
@@ -274,3 +289,36 @@ async def create_user(user: User):
     next_user_id += 1
 
     return user
+
+# dodane Lesson 33 task 10
+# ===== Swagger security (żeby pojawiło się pole X-API-Key) =====
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+
+    # 🔐 Upewniamy się, że "components" istnieje
+    if "components" not in openapi_schema:
+        openapi_schema["components"] = {}
+
+    openapi_schema["components"]["securitySchemes"] = {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-API-Key",
+        }
+    }
+
+    openapi_schema["security"] = [{"ApiKeyAuth": []}]
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi

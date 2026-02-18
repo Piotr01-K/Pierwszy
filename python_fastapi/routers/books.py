@@ -1,10 +1,13 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
+# from main import verify_api_key
+from dependencies import verify_api_key
 
 # tworzymy router dla książek
 router = APIRouter(
     prefix="/books",
-    tags=["Books"]  # pojawi się w Swaggerze jako sekcja
+    tags=["Books"], # pojawi się w Swaggerze jako sekcja
+    dependencies=[Depends(verify_api_key)]  
 )
 
 # -------- MODEL --------

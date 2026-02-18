@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from dependencies import verify_api_key
 
 router = APIRouter(
     prefix="/authors",
