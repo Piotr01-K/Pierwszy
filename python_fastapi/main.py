@@ -9,6 +9,8 @@ import asyncio
 from datetime import datetime   # dodane Lesson 33 task 1
 import random # dodane Lesson 33 task 1
 from pydantic import BaseModel, EmailStr  # dodane Lesson 33 task 4, 5
+# import routerów
+from routers import books, authors  
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -19,6 +21,9 @@ app = FastAPI(
     description="API created during FastAPI course - users, books, products",
     version="1.0.0"
 )
+# dodane Lesson 33 task 9
+app.include_router(books.router)
+app.include_router(authors.router)
 
 class AppState:
     db_connection = None
