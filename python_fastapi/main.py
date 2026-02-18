@@ -14,7 +14,11 @@ API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name="X-API-Key")
 
-app = FastAPI()
+app = FastAPI(
+    title="My FastAPI Learning App",
+    description="API created during FastAPI course - users, books, products",
+    version="1.0.0"
+)
 
 class AppState:
     db_connection = None
@@ -146,33 +150,38 @@ async def shutdown_event():
     logging.info("Database connection closed")
     logging.info("Cache saved to disk")
 
-# dodane Lesson 33 task 1
-@app.get("/")
+# dodane Lesson 33 task 1, 8
+@app.get("/", tags=["General"])
 async def root():
     return {"message": "Hello"}
 
-@app.get("/time")
+@app.get("/time", tags=["General"])
 async def get_time():
+    """Returns current server time."""
+    from datetime import datetime
     return {"time": datetime.now()}
 
-@app.get("/random")
+@app.get("/random", tags=["General"])
 async def get_random_number():
+    """Returns random number between 1 and 100."""
+    import random
     return {"number": random.randint(1, 100)}
 
-# dodane Lesson 33 task 2
-@app.get("/greet/{name}")
-async def greet_user(
-    name: str = Path(min_length=2)
-):
+# dodane Lesson 33 task 2, 8
+@app.get("/greet/{name}", tags=["General"])
+async def greet_user(name: str):
+    if len(name) < 2:
+        raise HTTPException(status_code=400, detail="Name too short")
     return {"message": f"Hello {name}"}
 
-# dodane Lesson 33 task 3
-@app.get("/calculate")
+# dodane Lesson 33 task 3, 8
+@app.get("/calculate", tags=["Calculator"])
 async def calculate(
     a: int,
     b: int,
     operation: str = "add"
 ):
+    """Simple calculator supporting add, subtract, multiply and divide."""
     if operation == "add":
         result = a + b
     elif operation == "subtract":
@@ -193,8 +202,8 @@ async def calculate(
         "result": result
     }
 
-# dodane Lesson 33 task 4
-@app.post("/products")
+# dodane Lesson 33 task 4, 8
+@app.post("/products", tags=["Products"])
 async def create_product(product: Product):
     total_price = product.price * product.quantity
 
@@ -205,11 +214,11 @@ async def create_product(product: Product):
         "total_price": total_price
     }
 # dodane Lesson 33 task 5
-@app.get("/books")
+@app.get("/books", tags=["Books"])
 async def get_books():
     return books_db  # zwracamy wszystkie książki jako listę
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}", tags=["Books"])
 async def get_book(book_id: int):
     # sprawdzamy czy książka istnieje, jak brak do błąd 404
     if book_id not in books_db:
@@ -220,7 +229,7 @@ async def get_book(book_id: int):
 
     return books_db[book_id]
 
-@app.post("/books, status_code=status.HTTP_201_CREATED")
+@app.post("/books", tags=["Books"], status_code=status.HTTP_201_CREATED)
 async def create_book(book: Book):
     global next_book_id  # używamy globalnego licznika ID
 
@@ -237,7 +246,7 @@ async def create_book(book: Book):
 
     return response
 
-@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/books/{book_id}", tags=["Books"], status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int):
     # sprawdzamy czy istnieje, jeśli nie błąd 404
     if book_id not in books_db:
@@ -251,7 +260,7 @@ async def delete_book(book_id: int):
     return None  # 204 nie zwraca body
 
 # dodane Lesson 33 task 7
-@app.post("/users", status_code=status.HTTP_201_CREATED)
+@app.post("/users", tags=["Users"], status_code=status.HTTP_201_CREATED)
 async def create_user(user: User):
     global next_user_id
 
