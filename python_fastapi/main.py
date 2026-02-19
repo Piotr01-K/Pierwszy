@@ -41,9 +41,9 @@ class Product(BaseModel):
 
 # dodane Lesson 33 task 5
 # Model książki (walidacja JSON z requestu)
-class Book(BaseModel):
-    title: str
-    author: str
+# class Book(BaseModel):
+#     title: str
+#     author: str
 
 # dodane Lesson 33 task 7
 # ===== MODEL USER =====
@@ -51,8 +51,18 @@ class User(BaseModel):
     name: str
     email: EmailStr  # automatyczna walidacja email
 
-books_db = {}   # Nasza "baza danych" w pamięci (słownik)
-next_book_id = 1  # licznik ID (auto-increment jak w SQL)
+# dodane Lesson 33 task 11
+class Author(BaseModel):
+    name: str
+    email: EmailStr  # walidacja email
+
+# ass BookNested(BaseModel):
+#   title: str
+#   author: Author  # tutaj uwaga: model w modelu!
+#   price: float
+
+#  books_db = {}   # Nasza "baza danych" w pamięci (słownik)
+#  next_book_id = 1  # licznik ID (auto-increment jak w SQL)
 
 # dodane Lesson 33 task 7
 # prosta baza użytkowników w pamięci
@@ -98,22 +108,22 @@ async def add_custom_headers(request: Request, call_next):
 
 
 # middleware 3 — prosty API KEY
-@app.middleware("http")
-async def verify_api_key(request: Request, call_next):
-     # pozwalamy Swaggerowi działać bez klucza
-    if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
-        return await call_next(request)
+# @app.middleware("http")
+# async def verify_api_key(request: Request, call_next):
+#     # pozwalamy Swaggerowi działać bez klucza
+#    if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
+#        return await call_next(request)
 
-    api_key = request.headers.get(API_KEY_NAME)
+#    api_key = request.headers.get(API_KEY_NAME)
 
-    if api_key != "secret-key-123":
-        from fastapi.responses import JSONResponse
-        return JSONResponse(
-            status_code=401,
-            content={"detail": "Invalid or missing API Key"},
-        )
+#    if api_key != "secret-key-123":
+#        from fastapi.responses import JSONResponse
+#        return JSONResponse(
+#            status_code=401,
+#            content={"detail": "Invalid or missing API Key"},
+#        )
 
-    return await call_next(request)
+#    return await call_next(request)
 
 
 # CORS middleware (dla frontendu)
@@ -233,6 +243,7 @@ async def create_product(product: Product):
         "quantity": product.quantity,
         "total_price": total_price
     }
+'''''
 # dodane Lesson 33 task 5
 @app.get("/books", tags=["Books"])
 async def get_books(api_key: str = Depends(verify_api_key)):
@@ -278,7 +289,7 @@ async def delete_book(book_id: int):
     del books_db[book_id]
 
     return None  # 204 nie zwraca body
-
+'''''
 # dodane Lesson 33 task 7
 @app.post("/users", tags=["Users"], status_code=status.HTTP_201_CREATED)
 async def create_user(user: User, api_key: str = Depends(verify_api_key)):
@@ -289,7 +300,24 @@ async def create_user(user: User, api_key: str = Depends(verify_api_key)):
     next_user_id += 1
 
     return user
-
+'''
+# dodane Lesson 33 task 11
+@app.post("/books/nested", tags=["Nested models"])
+async def create_nested_book(book: BookNested):
+    """
+    Tworzy książkę z zagnieżdżonym autorem.
+    """
+    
+    # przykładowa logika – liczymy cenę z VAT
+    price_with_tax = book.price * 1.23
+    
+    return {
+        "title": book.title,
+        "author": book.author,
+        "price": book.price,
+        "price_with_tax": round(price_with_tax, 2)
+    }
+'''
 # dodane Lesson 33 task 10
 # ===== Swagger security (żeby pojawiło się pole X-API-Key) =====
 

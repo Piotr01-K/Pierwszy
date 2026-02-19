@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 # from main import verify_api_key
 from dependencies import verify_api_key
 
@@ -11,10 +11,23 @@ router = APIRouter(
 )
 
 # -------- MODEL --------
+# ass Book(BaseModel):
+#   title: str
+#   author: str
+
+
+# ==========================
+# MODELE ZADANIE 11
+# ==========================
+
+class Author(BaseModel):
+    name: str
+    email: EmailStr
+
 class Book(BaseModel):
     title: str
-    author: str
-
+    author: Author   # ← TERAZ autor jest obiektem!
+    price: float
 
 # -------- "BAZA DANYCH" W PAMIĘCI --------
 books_db = {}
