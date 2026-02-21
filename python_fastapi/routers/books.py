@@ -1,72 +1,79 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from pydantic import BaseModel, EmailStr
-# from main import verify_api_key
+# routers/books.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from database import get_db
+from models import BookORM
+from schemas import BookCreate, BookResponse
 from dependencies import verify_api_key
 
-# tworzymy router dla książek
 router = APIRouter(
     prefix="/books",
-    tags=["Books"], # pojawi się w Swaggerze jako sekcja
-    dependencies=[Depends(verify_api_key)]  
+    tags=["Books"],
+    dependencies=[Depends(verify_api_key)]
 )
 
-# -------- MODEL --------
-# ass Book(BaseModel):
-#   title: str
-#   author: str
+
+# ================================
+# GET /books — lista książek
+# ================================
+@router.get("/", response_model=list[BookResponse])
+async def get_books(db: AsyncSession = Depends(get_db)):
+    # pobieramy wszystkie książki z bazy
+    result = await db.execute(select(BookORM))
+    books = result.scalars().all()
+    return books
 
 
-# ==========================
-# MODELE ZADANIE 11
-# ==========================
-
-class Author(BaseModel):
-    name: str
-    email: EmailStr
-
-class Book(BaseModel):
-    title: str
-    author: Author   # ← TERAZ autor jest obiektem!
-    price: float
-
-# -------- "BAZA DANYCH" W PAMIĘCI --------
-books_db = {}
-next_book_id = 1
-
-
-# GET /books
-@router.get("/")
-async def get_books():
-    """Zwraca listę wszystkich książek"""
-    return books_db
-
-
+# ================================
 # GET /books/{id}
-@router.get("/{book_id}")
-async def get_book(book_id: int):
-    """Zwraca jedną książkę po ID"""
-    if book_id not in books_db:
+# ================================
+@router.get("/{book_id}", response_model=BookResponse)
+async def get_book(book_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(BookORM).where(BookORM.id == book_id)
+    )
+    book = result.scalar_one_or_none()
+
+    if not book:
         raise HTTPException(status_code=404, detail="Book not found")
-    return books_db[book_id]
-
-
-# POST /books
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_book(book: Book):
-    """Dodaje nową książkę"""
-    global next_book_id
-
-    books_db[next_book_id] = book
-    next_book_id += 1
 
     return book
 
 
+# ================================
+# POST /books
+# ================================
+@router.post("/", response_model=BookResponse, status_code=201)
+async def create_book(
+    book: BookCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    db_book = BookORM(**book.model_dump())
+
+    db.add(db_book)
+    await db.commit()
+    await db.refresh(db_book)
+
+    return db_book
+
+
+# ================================
 # DELETE /books/{id}
-@router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_book(book_id: int):
-    """Usuwa książkę"""
-    if book_id not in books_db:
+# ================================
+@router.delete("/{book_id}", status_code=204)
+async def delete_book(book_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(BookORM).where(BookORM.id == book_id)
+    )
+    book = result.scalar_one_or_none()
+
+    if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    del books_db[book_id]
+    await db.delete(book)
+    await db.commit()
+
+    return None

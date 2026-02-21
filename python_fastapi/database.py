@@ -36,3 +36,34 @@ async def get_db():
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+# dodane lesson 33 task 13
+DATABASE_URL = "sqlite+aiosqlite:///./books.db"
+
+# async engine
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,  # pokazuje SQL w terminalu (nauka!)
+)
+
+# fabryka sesji
+AsyncSessionLocal = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
+
+# baza dla modeli ORM
+Base = declarative_base()
+
+
+# dependency do FastAPI
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+
+# tworzenie tabel
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)

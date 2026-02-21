@@ -12,6 +12,7 @@ from pydantic import BaseModel, EmailStr  # dodane Lesson 33 task 4, 5
 from routers import books, authors  
 from dependencies import verify_api_key
 from fastapi.openapi.utils import get_openapi
+from database import init_db
 
 # API_KEY_NAME = "X-API-Key"
 # api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -153,6 +154,8 @@ async def background_worker():
 @app.on_event("startup")
 async def startup_event():
     logging.info("Application starting up...")
+
+    await init_db()  # tworzy tabele w bazie
 
     app.state.db_connection = "connected"
     logging.info("Database initialized")

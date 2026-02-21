@@ -31,3 +31,12 @@ class OrderORM(Base):
 
     # relacja N:1 → order należy do usera
     user = relationship("UserORM", back_populates="orders")
+
+# dodane lesson 33 task 13
+class BookORM(Base):
+    __tablename__ = "books"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    author = Column(String(200), nullable=False)
+    price = Column(Float, nullable=False)

@@ -49,3 +49,19 @@ class OrderResponse(OrderBase):
 # zagnieżdżony model
 class UserWithOrders(UserResponse):
     orders: List[OrderResponse] = []
+
+# dodane lesson 33 task 13
+class BookCreate(BaseModel):
+    title: str
+    author: str
+    price: float
+
+
+class BookResponse(BaseModel):
+    id: int
+    title: str
+    author: str
+    price: float
+
+    class Config:
+        from_attributes = True
