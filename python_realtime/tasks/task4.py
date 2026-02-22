@@ -37,6 +37,12 @@ class Query:
                 return User(**u)
         return None
 
+# dodane lesson 34 task 5
+    @strawberry.field
+    def users(self) -> List[User]:
+        """Zwraca wszystkich użytkowników"""
+        return [User(**u) for u in fake_users_db]
+    
 # ========================================
 # 🚀 Schema + app
 # ========================================
