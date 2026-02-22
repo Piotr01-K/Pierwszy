@@ -43,11 +43,35 @@ class Query:
         """Zwraca wszystkich użytkowników"""
         return [User(**u) for u in fake_users_db]
     
+# dodane lesson 34 task 6
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    def create_user(self, name: str, email: str) -> User:
+        """Tworzy nowego użytkownika"""
+
+        # wyliczamy nowe ID
+        new_id = max([u["id"] for u in fake_users_db]) + 1
+
+        # tworzymy usera
+        new_user_dict = {
+            "id": new_id,
+            "name": name,
+            "email": email,
+        }
+
+        # dodajemy do fake bazy
+        fake_users_db.append(new_user_dict)
+
+        # zwracamy obiekt User
+        return User(**new_user_dict)
+
 # ========================================
 # 🚀 Schema + app
 # ========================================
 
-schema = strawberry.Schema(query=Query)
+#  schema = strawberry.Schema(query=Query)
+schema = strawberry.Schema(query=Query, mutation=Mutation)   # zmienione lesson 34 task 6
 
 app = web.Application()
 
