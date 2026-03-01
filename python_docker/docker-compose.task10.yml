@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.task10
+    container_name: crud-backend
+    ports:
+      - "3000:8000"
+    depends_on:
+      - database
+    networks:
+      - crud-network
+
+  database:
+    image: postgres:15-alpine
+    container_name: crud-db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - crud-network
+
+networks:
+  crud-network:
+    driver: bridge
