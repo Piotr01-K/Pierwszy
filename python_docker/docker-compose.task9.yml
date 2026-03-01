@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.task9
+    container_name: cache-backend
+    ports:
+      - "3000:8000"
+    depends_on:
+      - redis
+    networks:
+      - cache-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: cache-redis
+    networks:
+      - cache-network
+
+networks:
+  cache-network:
+    driver: bridge
