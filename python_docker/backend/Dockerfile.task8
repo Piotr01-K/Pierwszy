@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install aiohttp
+
+COPY tasks/task8.py .
+
+CMD ["python", "task8.py"]
