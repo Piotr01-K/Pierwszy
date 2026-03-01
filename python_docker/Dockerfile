@@ -1,21 +1,22 @@
-# Base image z Pythonem
+# ===== STAGE 1: builder =====
+FROM python:3.11-slim AS builder
+
+WORKDIR /install
+
+# instalujemy aiohttp do osobnego katalogu
+RUN pip install --no-cache-dir --prefix=/install aiohttp
+
+# ===== STAGE 2: runtime =====
 FROM python:3.11-slim
 
-# Katalog roboczy w kontenerze
 WORKDIR /app
 
-# instalacja aiohttp  (wywalone przy lesson 37 task 4)
-# RUN pip install aiohttp
+# kopiujemy tylko zainstalowane pakiety
+COPY --from=builder /install /usr/local
 
-# Kopiuj plik zadania
-COPY tasks/task4.py .
+# kopiujemy kod aplikacji
+COPY tasks/task3.py .
 
-#   EXPOSE 8000  (wywalone przy lesson 37 task 4)
+EXPOSE 8000
 
-# katalog na logi (mount point)
-RUN mkdir -p /logs
-
-VOLUME ["/logs"]
-
-# Komenda startowa
-CMD ["python", "task4.py"]
+CMD ["python", "task3.py"]
