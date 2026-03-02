@@ -1,0 +1,44 @@
+services:
+
+  users-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usersdb
+    networks:
+      - micro-net
+
+  posts-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postsdb
+    networks:
+      - micro-net
+
+  users-service:
+    build: ./users-service
+    depends_on:
+      - users-db
+    networks:
+      - micro-net
+
+  posts-service:
+    build: ./posts-service
+    depends_on:
+      - posts-db
+    networks:
+      - micro-net
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "4000:8000"
+    depends_on:
+      - users-service
+      - posts-service
+    networks:
+      - micro-net
+
+networks:
+  micro-net:
