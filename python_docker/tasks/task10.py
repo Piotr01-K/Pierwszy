@@ -6,7 +6,7 @@ import asyncpg
 import os
 import asyncio
 
-DATABASE_URL = "postgresql://postgres:postgres@database:5432/mydb"
+DATABASE_URL = "postgresql://postgres:postgres@database:5432/booksdb"
 
 app = FastAPI()
 

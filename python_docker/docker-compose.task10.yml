@@ -1,23 +1,42 @@
 services:
+  database:
+    image: postgres:15-alpine
+    container_name: crud-db
+    environment:
+      POSTGRES_DB: booksdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - crud-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile.task10
     container_name: crud-backend
-    ports:
-      - "3000:8000"
+    environment:
+      DATABASE_URL: postgres://postgres:secret@database:5432/books
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - crud-network
 
-  database:
-    image: postgres:15-alpine
-    container_name: crud-db
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+  nginx:
+    image: nginx:alpine
+    container_name: crud-nginx
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/static:/static:ro
+    depends_on:
+      - backend
     networks:
       - crud-network
 
