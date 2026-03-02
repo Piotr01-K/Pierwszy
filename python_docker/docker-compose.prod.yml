@@ -1,0 +1,10 @@
+services:
+  backend:
+    volumes: []  # ❌ brak mountowania kodu
+    restart: always
+
+  nginx:
+    restart: always
+
+  database:
+    restart: always

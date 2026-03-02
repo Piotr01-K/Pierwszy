@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.task8
+    container_name: net-backend
+    networks:
+      - my-network
+
+  client:
+    image: curlimages/curl:8.5.0
+    container_name: net-client
+    depends_on:
+      - backend
+    command: ["sleep", "3600"]
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

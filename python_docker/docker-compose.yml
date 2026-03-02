@@ -1,0 +1,46 @@
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: crud-db
+    environment:
+      POSTGRES_DB: booksdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - crud-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.task10
+    container_name: crud-backend
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - crud-network
+    ports:
+      - "3000:8000"
+    volumes:
+      - ./tasks:/app/tasks  # 🔥 HOT RELOAD DEV
+
+  nginx:
+    image: nginx:alpine
+    container_name: crud-nginx
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - crud-network
+
+networks:
+  crud-network:
+    driver: bridge
