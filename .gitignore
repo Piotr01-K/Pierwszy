@@ -1,0 +1,46 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ======================
+# Virtual environments
+# ======================
+venv/
+.env/
+ENV/
+env/
+
+# ======================
+# Django
+# ======================
+*.sqlite3
+db.sqlite3
+/media/
+staticfiles/
+static/
+
+# Django secret settings (jeśli kiedyś dodasz)
+.env.local
+.env.production
+
+# ======================
+# Logs
+# ======================
+*.log
+
+# ======================
+# IDE / Editors
+# ======================
+.vscode/
+.idea/
+
+# ======================
+# OS files
+# ======================
+.DS_Store
+Thumbs.db
+
+django_cache/
